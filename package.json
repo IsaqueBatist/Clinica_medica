@@ -11,12 +11,22 @@
   "dependencies": {
     "expo": "~54.0.33",
     "expo-status-bar": "~3.0.9",
+    "jiti": "^2.6.1",
     "react": "19.1.0",
     "react-native": "0.81.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/react": "~19.1.0",
-    "typescript": "~5.9.2"
+    "@typescript-eslint/eslint-plugin": "^8.59.1",
+    "@typescript-eslint/parser": "^8.59.1",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.59.1"
   },
   "private": true
 }
