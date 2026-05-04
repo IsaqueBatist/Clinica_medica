@@ -16,7 +16,9 @@
  *    Use para ícones, accents, ilustrações — *não* para texto sobre branco.
  */
 
-export const coresClaras = {
+import { Tema } from "../types/theme";
+
+export const coresClaras: Tema = {
   fundo: {
     primario: "#FAFAF9", // canvas (fundo de tela)
     secundario: "#FFFFFF", // surface secundária (em alguns layouts)
@@ -48,7 +50,7 @@ export const coresClaras = {
   },
 };
 
-export const coresEscuras: typeof coresClaras = {
+export const coresEscuras: Tema = {
   fundo: {
     primario: "#1A1815", // canvas
     secundario: "#27251F", // surfaces secundárias

@@ -1,4 +1,8 @@
-export const STATUS_CONSULTA_ATIVOS = ["marcada", "confirmada", "realizada"] as const;
+export const STATUS_CONSULTA_ATIVOS = [
+  "marcada",
+  "confirmada",
+  "realizada",
+] as const;
 export const STATUS_CONSULTA_CANCELADOS = [
   "canceladaPeloCliente",
   "canceladaPeloMedico",
