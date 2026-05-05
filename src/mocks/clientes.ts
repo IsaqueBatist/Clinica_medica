@@ -14,7 +14,6 @@ export const clientesMock: Cliente[] = [
     endereco: {
       id: "END-001",
       cep: "01310-100",
-      rua: "Rua",
       logradouro: "Avenida Paulista",
       numero: "1500",
       complemento: "Apto 82",
@@ -35,7 +34,6 @@ export const clientesMock: Cliente[] = [
     endereco: {
       id: "END-002",
       cep: "04567-010",
-      rua: "Rua",
       logradouro: "Rua das Acácias",
       numero: "230",
       complemento: "",
@@ -57,7 +55,6 @@ export const clientesMock: Cliente[] = [
     endereco: {
       id: "END-003",
       cep: "22070-001",
-      rua: "Rua",
       logradouro: "Avenida Atlântica",
       numero: "2400",
       complemento: "Cobertura",
@@ -89,7 +86,6 @@ export const clientesMock: Cliente[] = [
     endereco: {
       id: "END-004",
       cep: "05409-002",
-      rua: "Rua",
       logradouro: "Rua Cardeal Arcoverde",
       numero: "880",
       complemento: "Casa 2",
@@ -120,7 +116,6 @@ export const clientesMock: Cliente[] = [
     endereco: {
       id: "END-005",
       cep: "30130-010",
-      rua: "Rua",
       logradouro: "Avenida Afonso Pena",
       numero: "1212",
       complemento: "Sala 304",
