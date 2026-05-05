@@ -6,7 +6,7 @@ export const Routes = {
 
   ListarConsultas: "ListarConsultas",
   DetalheConsulta: "DetalheConsulta",
-  
+
   ConsultaMarcacao: "ConsultaMarcacao",
   ConsultaConfirmacao: "ConsultaConfirmacao",
   ConsultaRealizacao: "ConsultaRealizacao",

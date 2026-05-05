@@ -1,10 +1,16 @@
-import React, { createContext, useMemo, useState, useCallback, type ReactNode } from 'react';
+import React, {
+  createContext,
+  useMemo,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
 
-import { coresClaras, coresEscuras } from '../theme/colors';
-import { espacamento } from '../theme/spacing';
-import { tipografia } from '../theme/typography';
-import { raios } from '../theme/radii';
-import type { Tema, ModoTema } from '../theme/types';
+import { coresClaras, coresEscuras } from "../theme/colors";
+import { espacamento } from "../theme/spacing";
+import { tipografia } from "../theme/typography";
+import { raios } from "../theme/radii";
+import type { Tema, ModoTema } from "../types/tema.type";
 
 /**
  * Context interno. O hook `useTema` é a API pública — não exporte
@@ -35,15 +41,18 @@ interface PropsProvedorTema {
   modoInicial?: ModoTema;
 }
 
-export function ProvedorTema({ children, modoInicial = 'claro' }: PropsProvedorTema) {
+export function ProvedorTema({
+  children,
+  modoInicial = "claro",
+}: PropsProvedorTema) {
   const [modo, definirModo] = useState<ModoTema>(modoInicial);
 
   const alternar = useCallback(() => {
-    definirModo((anterior) => (anterior === 'claro' ? 'escuro' : 'claro'));
+    definirModo((anterior) => (anterior === "claro" ? "escuro" : "claro"));
   }, []);
 
   const value = useMemo<ValorContextoTema>(() => {
-    const cores = modo === 'escuro' ? coresEscuras : coresClaras;
+    const cores = modo === "escuro" ? coresEscuras : coresClaras;
 
     return {
       tema: { cores, espacamento, tipografia, raios },
@@ -53,5 +62,7 @@ export function ProvedorTema({ children, modoInicial = 'claro' }: PropsProvedorT
     };
   }, [modo, alternar]);
 
-  return <ContextoTema.Provider value={value}>{children}</ContextoTema.Provider>;
+  return (
+    <ContextoTema.Provider value={value}>{children}</ContextoTema.Provider>
+  );
 }

@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+# Binários explícitos (não tocar)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary

@@ -1,4 +1,3 @@
-import { Especialidade } from "./especialidade.type";
 import { Cliente } from "./cliente.type";
 import { Medico } from "./medico.type";
 import {

@@ -1,5 +1,7 @@
 import { Medico } from "../types/medico.type";
 import { especialidadesMock } from "./especialidades";
+import { STATUS_PESSOA } from "../constants/pessoa";
+import { DIA_SEMANA } from "../constants/agenda";
 
 const [clinicaGeral, cardiologia, pediatria, ortopedia] = especialidadesMock;
 
@@ -23,20 +25,20 @@ export const medicosMock: Medico[] = [
     diasAtendimento: [
       {
         identificacao: "DA-01",
-        diaSemana: 1,
+        diaSemana: DIA_SEMANA.SEGUNDA,
         horaInicio: "08:00",
         horaFim: "12:00",
         tempoEstimado: 30,
       },
       {
         identificacao: "DA-02",
-        diaSemana: 3,
+        diaSemana: DIA_SEMANA.QUARTA,
         horaInicio: "08:00",
         horaFim: "12:00",
         tempoEstimado: 30,
       },
     ],
-    status: "ativo",
+    status: STATUS_PESSOA.ATIVO,
   },
   {
     matricula: "MED002",
@@ -57,20 +59,20 @@ export const medicosMock: Medico[] = [
     diasAtendimento: [
       {
         identificacao: "DA-03",
-        diaSemana: 2,
+        diaSemana: DIA_SEMANA.TERCA,
         horaInicio: "14:00",
         horaFim: "18:00",
         tempoEstimado: 20,
       },
       {
         identificacao: "DA-04",
-        diaSemana: 4,
+        diaSemana: DIA_SEMANA.QUINTA,
         horaInicio: "14:00",
         horaFim: "18:00",
         tempoEstimado: 20,
       },
     ],
-    status: "ativo",
+    status: STATUS_PESSOA.ATIVO,
   },
   {
     matricula: "MED003",
@@ -91,41 +93,41 @@ export const medicosMock: Medico[] = [
     diasAtendimento: [
       {
         identificacao: "DA-05",
-        diaSemana: 1,
+        diaSemana: DIA_SEMANA.SEGUNDA,
         horaInicio: "07:00",
         horaFim: "11:00",
         tempoEstimado: 15,
       },
       {
         identificacao: "DA-06",
-        diaSemana: 2,
+        diaSemana: DIA_SEMANA.TERCA,
         horaInicio: "07:00",
         horaFim: "11:00",
         tempoEstimado: 15,
       },
       {
         identificacao: "DA-07",
-        diaSemana: 3,
+        diaSemana: DIA_SEMANA.QUARTA,
         horaInicio: "07:00",
         horaFim: "11:00",
         tempoEstimado: 15,
       },
       {
         identificacao: "DA-08",
-        diaSemana: 4,
+        diaSemana: DIA_SEMANA.QUINTA,
         horaInicio: "07:00",
         horaFim: "11:00",
         tempoEstimado: 15,
       },
       {
         identificacao: "DA-09",
-        diaSemana: 5,
+        diaSemana: DIA_SEMANA.SEXTA,
         horaInicio: "07:00",
         horaFim: "11:00",
         tempoEstimado: 15,
       },
     ],
-    status: "ativo",
+    status: STATUS_PESSOA.ATIVO,
   },
   {
     matricula: "MED004",
@@ -146,20 +148,20 @@ export const medicosMock: Medico[] = [
     diasAtendimento: [
       {
         identificacao: "DA-10",
-        diaSemana: 3,
+        diaSemana: DIA_SEMANA.QUARTA,
         horaInicio: "09:00",
         horaFim: "13:00",
         tempoEstimado: 40,
       },
       {
         identificacao: "DA-11",
-        diaSemana: 6,
+        diaSemana: DIA_SEMANA.SABADO,
         horaInicio: "08:00",
         horaFim: "12:00",
         tempoEstimado: 40,
       },
     ],
-    status: "ativo",
+    status: STATUS_PESSOA.ATIVO,
   },
   {
     matricula: "MED005",
@@ -180,26 +182,26 @@ export const medicosMock: Medico[] = [
     diasAtendimento: [
       {
         identificacao: "DA-12",
-        diaSemana: 2,
+        diaSemana: DIA_SEMANA.TERCA,
         horaInicio: "13:00",
         horaFim: "17:00",
         tempoEstimado: 30,
       },
       {
         identificacao: "DA-13",
-        diaSemana: 4,
+        diaSemana: DIA_SEMANA.QUINTA,
         horaInicio: "13:00",
         horaFim: "17:00",
         tempoEstimado: 30,
       },
       {
         identificacao: "DA-14",
-        diaSemana: 5,
+        diaSemana: DIA_SEMANA.SEXTA,
         horaInicio: "13:00",
         horaFim: "17:00",
         tempoEstimado: 30,
       },
     ],
-    status: "inativo",
+    status: STATUS_PESSOA.INATIVO,
   },
 ];

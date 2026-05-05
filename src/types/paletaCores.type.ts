@@ -1,4 +1,4 @@
-export interface Tema {
+export interface PaletaCores {
   fundo: {
     primario: string;
     secundario: string;
