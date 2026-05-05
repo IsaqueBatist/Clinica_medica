@@ -11,7 +11,6 @@ export const medicosMock: Medico[] = [
     endereco: {
       id: "END-101",
       cep: "04538-132",
-      rua: "Avenida",
       logradouro: "Avenida Brigadeiro Faria Lima",
       numero: "2000",
       complemento: "Sala 1502",
@@ -46,7 +45,6 @@ export const medicosMock: Medico[] = [
     endereco: {
       id: "END-102",
       cep: "01426-001",
-      rua: "Rua",
       logradouro: "Rua Oscar Freire",
       numero: "500",
       complemento: "Conjunto 31",
@@ -81,7 +79,6 @@ export const medicosMock: Medico[] = [
     endereco: {
       id: "END-103",
       cep: "22070-002",
-      rua: "Avenida",
       logradouro: "Avenida Atlântica",
       numero: "1700",
       complemento: "Loja 4",
@@ -137,7 +134,6 @@ export const medicosMock: Medico[] = [
     endereco: {
       id: "END-104",
       cep: "30112-000",
-      rua: "Avenida",
       logradouro: "Avenida do Contorno",
       numero: "4500",
       complemento: "Andar 7",
@@ -172,7 +168,6 @@ export const medicosMock: Medico[] = [
     endereco: {
       id: "END-105",
       cep: "01304-000",
-      rua: "Rua",
       logradouro: "Rua Augusta",
       numero: "800",
       complemento: "Sala 22",
