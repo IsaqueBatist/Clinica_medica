@@ -1,4 +1,4 @@
-import { Especialidade } from "../types/especialidade.type";
+import { Especialidade } from "../types/models/especialidade.type";
 
 export const especialidadesMock: Especialidade[] = [
   { codigo: "ESP001", nome: "Clínica Geral" },
