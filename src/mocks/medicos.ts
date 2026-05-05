@@ -1,4 +1,4 @@
-import { Medico } from "../types/medico.type";
+import { Medico } from "../types/models/medico.type";
 import { especialidadesMock } from "./especialidades";
 import { STATUS_PESSOA } from "../constants/pessoa";
 import { DIA_SEMANA } from "../constants/agenda";
