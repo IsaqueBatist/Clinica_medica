@@ -22,15 +22,15 @@ export const STATUS_CONSULTA = {
 export type SituacaoConsulta =
   (typeof STATUS_CONSULTA)[keyof typeof STATUS_CONSULTA];
 
-export const STATUS_CONSULTA_LABEL: Record<SituacaoConsulta, string> = {
+export const STATUS_CONSULTA_LABEL = {
   marcada: "Marcada",
   confirmada: "Confirmada",
   realizada: "Realizada",
-  encerrada: "Encerrada",
   canceladaPeloCliente: "Cancelada pelo cliente",
   canceladaPeloMedico: "Cancelada pelo médico",
   canceladaPorNaoComparecimento: "Cancelada por não comparecimento",
-};
+  encerrada: "Encerrada",
+} as const satisfies Record<SituacaoConsulta, string>;
 
 export const TIPO_CONSULTA = {
   NOVA: "nova",
@@ -38,10 +38,10 @@ export const TIPO_CONSULTA = {
 } as const;
 export type TipoConsulta = (typeof TIPO_CONSULTA)[keyof typeof TIPO_CONSULTA];
 
-export const TIPO_CONSULTA_LABEL: Record<TipoConsulta, string> = {
+export const TIPO_CONSULTA_LABEL = {
   nova: "Nova",
   retorno: "Retorno",
-};
+} as const satisfies Record<TipoConsulta, string>;
 
 export const FORMA_PAGAMENTO = {
   DINHEIRO: "dinheiro",
@@ -54,11 +54,11 @@ export const FORMA_PAGAMENTO = {
 export type FormaPagamento =
   (typeof FORMA_PAGAMENTO)[keyof typeof FORMA_PAGAMENTO];
 
-export const FORMA_PAGAMENTO_LABEL: Record<FormaPagamento, string> = {
+export const FORMA_PAGAMENTO_LABEL = {
   dinheiro: "Dinheiro",
   cartaoCredito: "Cartão de crédito",
   cartaoDebito: "Cartão de débito",
   pix: "PIX",
   convenio: "Convênio",
   isento: "Isento",
-};
+} as const satisfies Record<FormaPagamento, string>;
