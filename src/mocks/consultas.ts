@@ -1,4 +1,4 @@
-import { Consulta } from "../types/consulta.type";
+import { Consulta } from "../types/models/consulta.type";
 import { clientesMock } from "./clientes";
 import { medicosMock } from "./medicos";
 
@@ -49,7 +49,8 @@ export const consultasMock: Consulta[] = [
     tipo: "nova",
     formaPagamento: "convenio",
     valor: 250,
-    laudo: "Artrose moderada em joelho direito. Sem indicação cirúrgica imediata.",
+    laudo:
+      "Artrose moderada em joelho direito. Sem indicação cirúrgica imediata.",
     receita: "Anti-inflamatório 7 dias + fisioterapia 2x semana.",
     procedimentos: "Avaliação clínica + radiografia do joelho.",
   },

@@ -3,7 +3,7 @@ export type StatusPessoa = (typeof STATUS_PESSOA)[number];
 
 export const STATUS_PESSOA_LABEL: Record<StatusPessoa, string> = {
   ativo: "Ativo",
-  inativo: "Inativo"
+  inativo: "Inativo",
 };
 
 export const SEXO = ["M", "F", "outro"] as const;

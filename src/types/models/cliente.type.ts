@@ -1,5 +1,5 @@
 import { Convenio } from "./convenio.type";
-import { Sexo, StatusPessoa } from "../constants/pessoa";
+import { Sexo, StatusPessoa } from "../../constants/pessoa";
 import { Endereco } from "./endereco.type";
 
 export interface Cliente {
