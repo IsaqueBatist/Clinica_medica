@@ -1,4 +1,5 @@
 import { clientesMock } from "../mocks";
+import { Cliente } from "../types/models/cliente.type";
 import { ServicoCliente } from "../types/services/ClienteService.service.type";
 import { delay } from "../utils/delay";
 
@@ -70,6 +71,33 @@ export const servicoCliente: ServicoCliente = {
     await delay();
     const proximoNumero = clientesMock.length + 1;
     const novaIdentificacao = `CLI${String(proximoNumero).padStart(3, "0")}`;
-    
+
+    const novoCliente: Cliente = {
+      identificacao: novaIdentificacao,
+      status: "ativo",
+      ...data,
+    };
+
+    clientesMock.push(novoCliente);
+
+    return { ...novoCliente };
+  },
+  async editar(identificacao, data) {
+    const index = clientesMock.findIndex(
+      (c) => c.identificacao === identificacao,
+    );
+
+    if (index === -1) {
+      throw new Error(
+        `Falha na atualização: Cliente com identificação '${identificacao}' inexistente.`,
+      );
+    }
+
+    clientesMock[index] = {
+      ...clientesMock[index],
+      ...data,
+    };
+
+    return { ...clientesMock[index] };
   },
 };
