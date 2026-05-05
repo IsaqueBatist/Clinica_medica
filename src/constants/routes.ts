@@ -3,16 +3,16 @@ export const Routes = {
   Autenticado: "Autenticado",
 
   Dashboard: "Dashboard",
-  ConsultaConfirmacao: "ConsultaConfirmacao",
+
+  ListarConsultas: "ListarConsultas",
+  DetalheConsulta: "DetalheConsulta",
+  
+  ConsultaMarcacao: "ConsultaMarcacao",
   ConsultaRealizacao: "ConsultaRealizacao",
   ConsultaEncerramento: "ConsultaEncerramento",
   ConsultaCancelamento: "ConsultaCancelamento",
 
-  AgendaSemana: "AgendaSemana",
-  ConsultaMarcacao: "ConsultaMarcacao",
-
-  ListaCliente: "ListaCliente",
+  ListarClientes: "ListaClientes",
   CadastroCliente: "CadastroCliente",
   DetalheCliente: "DetalheCliente",
 } as const;
-export type RouteName = (typeof Routes)[keyof typeof Routes];

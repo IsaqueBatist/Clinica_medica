@@ -16,7 +16,7 @@
  *    Use para ícones, accents, ilustrações — *não* para texto sobre branco.
  */
 
-import { Tema } from "../types/theme";
+import { Tema } from "../types/theme.type";
 
 export const coresClaras: Tema = {
   fundo: {

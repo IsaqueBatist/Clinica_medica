@@ -15,9 +15,9 @@ export const STATUS_CONSULTA = [
   ...STATUS_CONSULTA_CANCELADOS,
   ...STATUS_CONSULTA_FINALIZADOS,
 ] as const;
-export type StatusConsulta = (typeof STATUS_CONSULTA)[number];
+export type SituacaoConsulta = (typeof STATUS_CONSULTA)[number];
 
-export const STATUS_CONSULTA_LABEL: Record<StatusConsulta, string> = {
+export const STATUS_CONSULTA_LABEL: Record<SituacaoConsulta, string> = {
   marcada: "Marcada",
   confirmada: "Confirmada",
   realizada: "Realizada",
