@@ -8,10 +8,9 @@ import {
 } from "../constants/consulta";
 
 export interface Consulta {
-  numero: number;
+  numero: string;
   cliente: Cliente;
   medico: Medico;
-  especialidade: Especialidade;
   dataHora: Date;
   situacao: SituacaoConsulta;
   tipo: TipoConsulta;

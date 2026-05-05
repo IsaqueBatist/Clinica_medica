@@ -1,7 +1,6 @@
 export interface Endereco {
-  id: number;
+  id: string;
   cep: string;
-  rua: string;
   logradouro: string;
   numero: string;
   complemento: string;

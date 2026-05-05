@@ -8,6 +8,7 @@ export const Routes = {
   DetalheConsulta: "DetalheConsulta",
   
   ConsultaMarcacao: "ConsultaMarcacao",
+  ConsultaConfirmacao: "ConsultaConfirmacao",
   ConsultaRealizacao: "ConsultaRealizacao",
   ConsultaEncerramento: "ConsultaEncerramento",
   ConsultaCancelamento: "ConsultaCancelamento",

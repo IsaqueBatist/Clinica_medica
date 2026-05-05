@@ -1,7 +1,7 @@
 import { DiaSemana } from "../constants/agenda";
 
 export interface DiasAtendimento {
-  identificacao: number;
+  identificacao: string;
   diaSemana: DiaSemana;
   horaInicio: string;
   horaFim: string;
