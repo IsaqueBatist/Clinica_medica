@@ -1,0 +1,1 @@
+export { TelaPlaceholder } from "./TelaPlaceholder";

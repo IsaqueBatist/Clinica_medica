@@ -5,7 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
 import { TelaLogin } from "./src/screens/Login";
-import { TelaShowcase } from "./src/screens/Showcase";
+import { AppNavigator } from "./src/navigation";
 
 /**
  * Entrada do app.
@@ -16,9 +16,11 @@ import { TelaShowcase } from "./src/screens/Showcase";
  *       ProvedorToast → consome o tema, então fica abaixo
  *         <App>
  *
- * Sem react-navigation por enquanto — alternamos manualmente entre Login e
- * Showcase via state. Quando o app for ganhar rotas reais, basta substituir
- * este switch por um `NavigationContainer + Stack.Navigator`.
+ * Auth e navegação são desacoplados: enquanto não autenticado, mostramos
+ * `TelaLogin` direto (sem NavigationContainer). Após login, o `AppNavigator`
+ * monta o `NavigationContainer` + Drawer. Vantagem: o usuário não autenticado
+ * nunca tem state de navegação alocado, e a transição login → app é uma
+ * remontagem limpa.
  */
 export default function App() {
   const [autenticado, setAutenticado] = useState(false);
@@ -29,7 +31,7 @@ export default function App() {
         <ProvedorToast>
           <StatusBar style="auto" />
           {autenticado ? (
-            <TelaShowcase aoSair={() => setAutenticado(false)} />
+            <AppNavigator aoSair={() => setAutenticado(false)} />
           ) : (
             <TelaLogin aoEntrar={() => setAutenticado(true)} />
           )}
