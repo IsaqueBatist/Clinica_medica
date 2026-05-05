@@ -1,4 +1,4 @@
-export interface Especialidade{
+export interface Especialidade {
   codigo: string;
   nome: string;
 }

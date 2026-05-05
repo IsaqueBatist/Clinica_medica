@@ -1,20 +1,17 @@
 /**
  * Tipos centrais do tema.
- * O `PaletaCores` é derivado de `coresClaras` (typeof) — isso garante,
- * em compile-time, que `coresEscuras` tenha exatamente as mesmas chaves.
  */
 
-import type { coresClaras } from './colors';
-import type { espacamento } from './spacing';
-import type { tipografia } from './typography';
-import type { raios } from './radii';
+import type { PaletaCores } from "./paletaCores.type";
+import type { espacamento } from "../theme/spacing";
+import type { tipografia } from "../theme/typography";
+import type { raios } from "../theme/radii";
 
-export type PaletaCores = typeof coresClaras;
 export type Espacamento = typeof espacamento;
 export type Tipografia = typeof tipografia;
 export type Raios = typeof raios;
 
-export type ModoTema = 'claro' | 'escuro';
+export type ModoTema = "claro" | "escuro";
 
 /**
  * Forma final do tema exposta pelo `useTema()`.

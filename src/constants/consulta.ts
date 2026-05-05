@@ -1,21 +1,26 @@
-export const STATUS_CONSULTA_ATIVOS = [
-  "marcada",
-  "confirmada",
-  "realizada",
-] as const;
-export const STATUS_CONSULTA_CANCELADOS = [
-  "canceladaPeloCliente",
-  "canceladaPeloMedico",
-  "canceladaPorNaoComparecimento",
-] as const;
-export const STATUS_CONSULTA_FINALIZADOS = ["encerrada"] as const;
+export const STATUS_CONSULTA_ATIVOS = {
+  MARCADA: "marcada",
+  CONFIRMADA: "confirmada",
+  REALIZADA: "realizada",
+} as const;
 
-export const STATUS_CONSULTA = [
+export const STATUS_CONSULTA_CANCELADOS = {
+  CANCELADA_PELO_CLIENTE: "canceladaPeloCliente",
+  CANCELADA_PELO_MEDICO: "canceladaPeloMedico",
+  CANCELADA_POR_NAO_COMPARECIMENTO: "canceladaPorNaoComparecimento",
+} as const;
+
+export const STATUS_CONSULTA_FINALIZADOS = {
+  ENCERRADA: "encerrada",
+} as const;
+
+export const STATUS_CONSULTA = {
   ...STATUS_CONSULTA_ATIVOS,
   ...STATUS_CONSULTA_CANCELADOS,
   ...STATUS_CONSULTA_FINALIZADOS,
-] as const;
-export type SituacaoConsulta = (typeof STATUS_CONSULTA)[number];
+} as const;
+export type SituacaoConsulta =
+  (typeof STATUS_CONSULTA)[keyof typeof STATUS_CONSULTA];
 
 export const STATUS_CONSULTA_LABEL: Record<SituacaoConsulta, string> = {
   marcada: "Marcada",
@@ -27,23 +32,27 @@ export const STATUS_CONSULTA_LABEL: Record<SituacaoConsulta, string> = {
   canceladaPorNaoComparecimento: "Cancelada por não comparecimento",
 };
 
-export const TIPO_CONSULTA = ["nova", "retorno"] as const;
-export type TipoConsulta = (typeof TIPO_CONSULTA)[number];
+export const TIPO_CONSULTA = {
+  NOVA: "nova",
+  RETORNO: "retorno",
+} as const;
+export type TipoConsulta = (typeof TIPO_CONSULTA)[keyof typeof TIPO_CONSULTA];
 
 export const TIPO_CONSULTA_LABEL: Record<TipoConsulta, string> = {
   nova: "Nova",
   retorno: "Retorno",
 };
 
-export const FORMA_PAGAMENTO = [
-  "dinheiro",
-  "cartaoCredito",
-  "cartaoDebito",
-  "pix",
-  "convenio",
-  "isento",
-] as const;
-export type FormaPagamento = (typeof FORMA_PAGAMENTO)[number];
+export const FORMA_PAGAMENTO = {
+  DINHEIRO: "dinheiro",
+  CARTAO_CREDITO: "cartaoCredito",
+  CARTAO_DEBITO: "cartaoDebito",
+  PIX: "pix",
+  CONVENIO: "convenio",
+  ISENTO: "isento",
+} as const;
+export type FormaPagamento =
+  (typeof FORMA_PAGAMENTO)[keyof typeof FORMA_PAGAMENTO];
 
 export const FORMA_PAGAMENTO_LABEL: Record<FormaPagamento, string> = {
   dinheiro: "Dinheiro",

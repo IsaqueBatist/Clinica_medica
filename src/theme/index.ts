@@ -19,8 +19,8 @@ export type { ValorContextoTema } from "../contexts/ContextoTema";
 export type {
   Tema,
   ModoTema,
-  PaletaCores,
   Espacamento,
   Tipografia,
   Raios,
-} from "./types";
+} from "../types/tema.type";
+export type { PaletaCores } from "../types/paletaCores.type";

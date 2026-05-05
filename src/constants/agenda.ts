@@ -1,5 +1,11 @@
-export const STATUS_AGENDA = ["L", "M", "C", "X", "B"] as const;
-export type StatusAgenda = (typeof STATUS_AGENDA)[number];
+export const STATUS_AGENDA = {
+  LIVRE: "L",
+  MARCADO: "M",
+  CANCELADO_CLIENTE: "C",
+  CANCELADO_MEDICO: "X",
+  NAO_ATENDE: "B",
+} as const;
+export type StatusAgenda = (typeof STATUS_AGENDA)[keyof typeof STATUS_AGENDA];
 
 export const STATUS_AGENDA_LABEL: Record<StatusAgenda, string> = {
   L: "Livre",
@@ -9,8 +15,16 @@ export const STATUS_AGENDA_LABEL: Record<StatusAgenda, string> = {
   B: "Não atende",
 };
 
-export const DIA_SEMANA = [0, 1, 2, 3, 4, 5, 6] as const;
-export type DiaSemana = (typeof DIA_SEMANA)[number];
+export const DIA_SEMANA = {
+  DOMINGO: 0,
+  SEGUNDA: 1,
+  TERCA: 2,
+  QUARTA: 3,
+  QUINTA: 4,
+  SEXTA: 5,
+  SABADO: 6,
+} as const;
+export type DiaSemana = (typeof DIA_SEMANA)[keyof typeof DIA_SEMANA];
 
 export const DIA_SEMANA_LABEL: Record<DiaSemana, string> = {
   0: "Domingo",

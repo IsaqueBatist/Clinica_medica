@@ -1,8 +1,8 @@
 import type { StatusAgenda } from "../constants/agenda";
 import type { SituacaoConsulta } from "../constants/consulta";
-import { Tema } from "../types/theme.type";
+import { PaletaCores } from "../types/paletaCores.type";
 
-export type StatusRole = keyof Tema["status"];
+export type StatusRole = keyof PaletaCores["status"];
 
 export const STATUS_AGENDA_ROLE: Record<StatusAgenda, StatusRole> = {
   L: "sucesso",

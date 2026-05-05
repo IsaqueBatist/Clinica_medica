@@ -1,6 +1,6 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { ContextoTema, type ValorContextoTema } from '../contexts/ContextoTema';
+import { ContextoTema, type ValorContextoTema } from "../contexts/ContextoTema";
 
 /**
  * Hook para consumir o tema atual.
@@ -26,7 +26,7 @@ import { ContextoTema, type ValorContextoTema } from '../contexts/ContextoTema';
 export function useTema(): ValorContextoTema {
   const ctx = useContext(ContextoTema);
   if (!ctx) {
-    throw new Error('useTema deve ser usado dentro de <ProvedorTema>');
+    throw new Error("useTema deve ser usado dentro de <ProvedorTema>");
   }
   return ctx;
 }
