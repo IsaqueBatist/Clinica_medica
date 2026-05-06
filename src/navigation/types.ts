@@ -86,9 +86,21 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
       { nome: Routes.ListarConsultas, rotulo: "Listar", icone: "menu" },
       { nome: Routes.ConsultaMarcacao, rotulo: "Marcar", icone: "mais" },
       { nome: Routes.ConsultaConfirmacao, rotulo: "Confirmar", icone: "check" },
-      { nome: Routes.ConsultaRealizacao, rotulo: "Realizar", icone: "calendario" },
-      { nome: Routes.ConsultaEncerramento, rotulo: "Encerrar", icone: "editar" },
-      { nome: Routes.ConsultaCancelamento, rotulo: "Cancelar", icone: "fechar" },
+      {
+        nome: Routes.ConsultaRealizacao,
+        rotulo: "Realizar",
+        icone: "calendario",
+      },
+      {
+        nome: Routes.ConsultaEncerramento,
+        rotulo: "Encerrar",
+        icone: "editar",
+      },
+      {
+        nome: Routes.ConsultaCancelamento,
+        rotulo: "Cancelar",
+        icone: "fechar",
+      },
     ],
   },
 ];

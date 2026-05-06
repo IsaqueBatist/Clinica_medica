@@ -7,7 +7,7 @@ export type EditarDiasAtendimento = Omit<
 >;
 
 export interface DiasAtendimentoService {
-  listar(identificacaoMedico: string): Promise<DiasAtendimento>;
+  listar(identificacaoMedico: string): Promise<DiasAtendimento[]>;
   registrar(data: RegistrarDiasAtendimento): Promise<DiasAtendimento>;
   editar(
     identificacao: string,

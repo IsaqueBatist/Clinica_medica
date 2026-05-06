@@ -1,7 +1,7 @@
 import { SituacaoConsulta } from "../../constants/consulta";
 import { Cliente } from "../models/cliente.type";
 import { Consulta } from "../models/consulta.type";
-import { Medico } from "./MedicoService.service.type";
+import { Medico } from "../models/medico.type";
 import { PaginatedResult } from "./services";
 
 interface FiltrosConsulta {
@@ -41,7 +41,7 @@ export interface ServicoConsulta {
     filtro: FiltrosConsulta,
     page?: number,
     limit?: number,
-  ): Promise<PaginatedResult<Consulta[]>>;
+  ): Promise<PaginatedResult<Consulta>>;
   marcarConsulta(data: MarcarConsultaDTO): Promise<Consulta>;
   realizarConsulta(
     idConsulta: string,
@@ -53,6 +53,10 @@ export interface ServicoConsulta {
   ): Promise<void>;
   confirmarConsulta(idConsulta: string): Promise<void>;
   cancelarConsulta(
+    idConsulta: string,
+    data: CancelarConsultaDTO,
+  ): Promise<void>;
+  cancelarConsultaMedico(
     idConsulta: string,
     data: CancelarConsultaDTO,
   ): Promise<void>;

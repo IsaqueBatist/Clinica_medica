@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -6,6 +6,7 @@ import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
 import { TelaLogin } from "./src/screens/Login";
 import { AppNavigator } from "./src/navigation";
+import { servicoMedico } from "./src/services";
 
 /**
  * Entrada do app.
@@ -25,6 +26,15 @@ import { AppNavigator } from "./src/navigation";
 export default function App() {
   const [autenticado, setAutenticado] = useState(false);
 
+  useEffect(() => {
+    (async () => {
+      const horariosDisponiveis = await servicoMedico.buscarAgendaDia(
+        new Date(),
+        "MED001",
+      );
+      console.log(horariosDisponiveis);
+    })();
+  }, []);
   return (
     <SafeAreaProvider>
       <ProvedorTema modoInicial="claro">
