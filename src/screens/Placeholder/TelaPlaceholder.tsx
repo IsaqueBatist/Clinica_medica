@@ -9,6 +9,7 @@ import { BotaoIcone } from "../../components/ui/BotaoIcone";
 import { Texto } from "../../components/ui/Texto";
 import { MarcaApp } from "../../components/ui/MarcaApp";
 import type { DrawerParamList } from "../../navigation/types";
+import { Icone } from "../../components";
 
 /**
  * TelaPlaceholder — usada por todos os destinos do Drawer enquanto as telas
@@ -20,8 +21,7 @@ import type { DrawerParamList } from "../../navigation/types";
  */
 export function TelaPlaceholder() {
   const { tema } = useTema();
-  const navigation =
-    useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const route = useRoute();
 
   return (

@@ -6,7 +6,7 @@ import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
 import { TelaLogin } from "./src/screens/Login";
 import { AppNavigator } from "./src/navigation";
-import { servicoMedico } from "./src/services";
+import { ProvedoresApp } from "./src/contexts";
 
 /**
  * Entrada do app.
@@ -25,26 +25,18 @@ import { servicoMedico } from "./src/services";
  */
 export default function App() {
   const [autenticado, setAutenticado] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const horariosDisponiveis = await servicoMedico.buscarAgendaDia(
-        new Date(),
-        "MED001",
-      );
-      console.log(horariosDisponiveis);
-    })();
-  }, []);
   return (
     <SafeAreaProvider>
       <ProvedorTema modoInicial="claro">
         <ProvedorToast>
-          <StatusBar style="auto" />
-          {autenticado ? (
-            <AppNavigator aoSair={() => setAutenticado(false)} />
-          ) : (
-            <TelaLogin aoEntrar={() => setAutenticado(true)} />
-          )}
+          <ProvedoresApp>
+            <StatusBar style="auto" />
+            {autenticado ? (
+              <AppNavigator aoSair={() => setAutenticado(false)} />
+            ) : (
+              <TelaLogin aoEntrar={() => setAutenticado(true)} />
+            )}
+          </ProvedoresApp>
         </ProvedorToast>
       </ProvedorTema>
     </SafeAreaProvider>

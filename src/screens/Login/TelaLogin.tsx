@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,6 +9,7 @@ import { CampoFormulario } from "../../components/ui/CampoFormulario";
 import { EntradaTexto } from "../../components/ui/EntradaTexto";
 import { MarcaApp } from "../../components/ui/MarcaApp";
 import { Texto } from "../../components/ui/Texto";
+import { useContextCliente } from "../../hooks";
 
 /**
  * TelaLogin — exemplo de uso integrado: form, validação local, loading,
@@ -25,6 +26,7 @@ export interface PropsTelaLogin {
 export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
   const { tema } = useTema();
   const toast = useToast();
+  const { state } = useContextCliente();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -69,6 +71,10 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
       setEnviando(false);
     }
   }
+
+  useEffect(() => {
+    console.log(state);
+  }, []);
 
   return (
     <SafeAreaView

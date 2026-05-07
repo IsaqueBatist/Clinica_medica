@@ -203,9 +203,30 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
               marginTop: t * 0.1,
             }}
           />
-          <View style={linha({ top: t * 0.32, left: t * 0.075, right: t * 0.075, height: traco })} />
-          <View style={linha({ top: t * 0.05, left: t * 0.22, width: traco, height: t * 0.18 })} />
-          <View style={linha({ top: t * 0.05, right: t * 0.22, width: traco, height: t * 0.18 })} />
+          <View
+            style={linha({
+              top: t * 0.32,
+              left: t * 0.075,
+              right: t * 0.075,
+              height: traco,
+            })}
+          />
+          <View
+            style={linha({
+              top: t * 0.05,
+              left: t * 0.22,
+              width: traco,
+              height: t * 0.18,
+            })}
+          />
+          <View
+            style={linha({
+              top: t * 0.05,
+              right: t * 0.22,
+              width: traco,
+              height: t * 0.18,
+            })}
+          />
         </View>
       );
 
@@ -241,16 +262,48 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
     case "mais":
       return (
         <View style={wrap}>
-          <View style={linha({ left: t * 0.15, right: t * 0.15, top: (t - traco) / 2, height: traco, borderRadius: traco })} />
-          <View style={linha({ top: t * 0.15, bottom: t * 0.15, left: (t - traco) / 2, width: traco, borderRadius: traco })} />
+          <View
+            style={linha({
+              left: t * 0.15,
+              right: t * 0.15,
+              top: (t - traco) / 2,
+              height: traco,
+              borderRadius: traco,
+            })}
+          />
+          <View
+            style={linha({
+              top: t * 0.15,
+              bottom: t * 0.15,
+              left: (t - traco) / 2,
+              width: traco,
+              borderRadius: traco,
+            })}
+          />
         </View>
       );
 
     case "fechar":
       return (
         <View style={wrap}>
-          <View style={linha({ left: t * 0.15, right: t * 0.15, top: (t - traco) / 2, height: traco, transform: [{ rotate: "45deg" }] })} />
-          <View style={linha({ left: t * 0.15, right: t * 0.15, top: (t - traco) / 2, height: traco, transform: [{ rotate: "-45deg" }] })} />
+          <View
+            style={linha({
+              left: t * 0.15,
+              right: t * 0.15,
+              top: (t - traco) / 2,
+              height: traco,
+              transform: [{ rotate: "45deg" }],
+            })}
+          />
+          <View
+            style={linha({
+              left: t * 0.15,
+              right: t * 0.15,
+              top: (t - traco) / 2,
+              height: traco,
+              transform: [{ rotate: "-45deg" }],
+            })}
+          />
         </View>
       );
 
@@ -335,8 +388,23 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
               justifyContent: "center",
             }}
           >
-            <View style={{ width: traco, height: traco, borderRadius: traco, backgroundColor: corResolvida, marginTop: -t * 0.18 }} />
-            <View style={{ width: traco, height: t * 0.28, backgroundColor: corResolvida, marginTop: t * 0.05 }} />
+            <View
+              style={{
+                width: traco,
+                height: traco,
+                borderRadius: traco,
+                backgroundColor: corResolvida,
+                marginTop: -t * 0.18,
+              }}
+            />
+            <View
+              style={{
+                width: traco,
+                height: t * 0.28,
+                backgroundColor: corResolvida,
+                marginTop: t * 0.05,
+              }}
+            />
           </View>
         </View>
       );
@@ -420,9 +488,33 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
     case "menu":
       return (
         <View style={wrap}>
-          <View style={linha({ left: t * 0.1, right: t * 0.1, top: t * 0.25, height: traco, borderRadius: traco })} />
-          <View style={linha({ left: t * 0.1, right: t * 0.1, top: (t - traco) / 2, height: traco, borderRadius: traco })} />
-          <View style={linha({ left: t * 0.1, right: t * 0.1, bottom: t * 0.25, height: traco, borderRadius: traco })} />
+          <View
+            style={linha({
+              left: t * 0.1,
+              right: t * 0.1,
+              top: t * 0.25,
+              height: traco,
+              borderRadius: traco,
+            })}
+          />
+          <View
+            style={linha({
+              left: t * 0.1,
+              right: t * 0.1,
+              top: (t - traco) / 2,
+              height: traco,
+              borderRadius: traco,
+            })}
+          />
+          <View
+            style={linha({
+              left: t * 0.1,
+              right: t * 0.1,
+              bottom: t * 0.25,
+              height: traco,
+              borderRadius: traco,
+            })}
+          />
         </View>
       );
 
