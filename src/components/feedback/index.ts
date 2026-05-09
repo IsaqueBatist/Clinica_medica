@@ -4,6 +4,7 @@
  * qualquer fluxo (cadastro, edição, login, etc.).
  */
 
+export * from "./EmptyState";
 export * from "./EstadoCarregando";
 export * from "./EstadoErro";
 export * from "./EstadoSucesso";

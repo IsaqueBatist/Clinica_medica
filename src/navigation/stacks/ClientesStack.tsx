@@ -2,6 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { TelaPlaceholder } from "../../screens/Placeholder";
+import { TelaListarClientes } from "../../screens/Cliente/TelaListarClientes";
 import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ClientesStackParamList } from "../types";
@@ -15,7 +16,7 @@ export function ClientesStack() {
     >
       <Stack.Screen
         name={Routes.ListarClientes}
-        component={TelaPlaceholder}
+        component={TelaListarClientes}
         options={{ title: "Clientes" }}
       />
       <Stack.Screen

@@ -75,7 +75,7 @@ export function BotaoIcone({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={rotuloAcessivel}
-      accessibilityState={{ disabled: disabled ?? undefined }}
+      accessibilityState={{ disabled: disabled ?? false }}
       disabled={disabled}
       onPressIn={(e) => {
         setPressionado(true);

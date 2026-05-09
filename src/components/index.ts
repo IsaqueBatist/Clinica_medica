@@ -11,5 +11,11 @@
  */
 
 export * from "./feedback";
+export { FormScreen, type PropsFormScreen } from "./FormScreen";
+export {
+  FiltrosConsulta,
+  type ModoFiltrosConsulta,
+  type PropsFiltrosConsulta,
+} from "./FiltrosConsulta";
 export * from "./navegacao";
 export * from "./ui";

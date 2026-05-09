@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { FormScreen } from "../../components/FormScreen";
 import { useTema } from "../../hooks/useTema";
 import { useToast } from "../../hooks/useToast";
 import { Botao } from "../../components/ui/Botao";
@@ -24,6 +25,7 @@ export interface PropsTelaLogin {
 }
 
 export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
+  const insets = useSafeAreaInsets();
   const { tema } = useTema();
   const toast = useToast();
   const { state } = useContextoCliente();
@@ -77,22 +79,23 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
   }, []);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: tema.cores.fundo.primario,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
     >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <FormScreen
+        contentContainerStyle={{
+          justifyContent: "center",
+          padding: tema.espacamento.xl,
+        }}
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "center",
-            padding: tema.espacamento.xl,
-          }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View
+        <View
             style={{
               alignSelf: "center",
               width: "100%",
@@ -144,7 +147,7 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
                 <EntradaTexto
                   tipo="senha"
                   placeholder="••••••••"
-                  value={"certo"}
+                  value={senha}
                   onChangeText={setSenha}
                   erro={!!erros.senha}
                   editable={!enviando}
@@ -181,8 +184,7 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
               Dica: digite a senha "errada" para ver o estado de erro.
             </Texto>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </FormScreen>
+    </View>
   );
 }

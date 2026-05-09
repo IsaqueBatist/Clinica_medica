@@ -107,3 +107,60 @@ export const consultasMock: Consulta[] = [
     tipo: TIPO_CONSULTA.RETORNO,
   },
 ];
+
+/** Consultas com data relativa a “hoje” para CONS-03 / fluxos locais. */
+(function seedConsultasHoje() {
+  const agora = new Date();
+  const futuroHoje = new Date(agora);
+  futuroHoje.setHours(23, 30, 0, 0);
+  if (futuroHoje <= agora) {
+    futuroHoje.setTime(agora.getTime() + 90 * 60_000);
+  }
+
+  const passadoHoje = new Date(agora);
+  passadoHoje.setTime(agora.getTime() - 3 * 60 * 60_000);
+
+  const confirmadaHoje = new Date(agora);
+  confirmadaHoje.setTime(agora.getTime() + 2 * 60 * 60_000);
+
+  const realizadaHoje = new Date(agora);
+  realizadaHoje.setTime(agora.getTime() + 60 * 60_000);
+
+  consultasMock.push(
+    {
+      numero: "1901",
+      cliente: cli002JoaoPedro,
+      medico: med001ClinicaGeral,
+      dataHora: futuroHoje,
+      situacao: STATUS_CONSULTA.MARCADA,
+      tipo: TIPO_CONSULTA.NOVA,
+    },
+    {
+      numero: "1902",
+      cliente: cli003Carlos,
+      medico: med002Cardiologista,
+      dataHora: passadoHoje,
+      situacao: STATUS_CONSULTA.MARCADA,
+      tipo: TIPO_CONSULTA.NOVA,
+    },
+    {
+      numero: "1903",
+      cliente: cli005Lucas,
+      medico: med003Pediatra,
+      dataHora: confirmadaHoje,
+      situacao: STATUS_CONSULTA.CONFIRMADA,
+      tipo: TIPO_CONSULTA.NOVA,
+    },
+    {
+      numero: "1904",
+      cliente: cli001Mariana,
+      medico: med004Ortopedista,
+      dataHora: realizadaHoje,
+      situacao: STATUS_CONSULTA.REALIZADA,
+      tipo: TIPO_CONSULTA.NOVA,
+      laudo: "Evolução favorável.",
+      receita: "",
+      observacao: "Pendente encerramento administrativo.",
+    },
+  );
+})();

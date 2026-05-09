@@ -60,4 +60,5 @@ export interface ServicoConsulta {
     idConsulta: string,
     data: CancelarConsultaDTO,
   ): Promise<void>;
+  cancelarPorNaoComparecimento(idConsulta: string): Promise<void>;
 }

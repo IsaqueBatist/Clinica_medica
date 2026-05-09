@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTema } from "../../hooks/useTema";
 import { useToast } from "../../hooks/useToast";
@@ -63,6 +63,7 @@ function paraConsultaCalendario(): ConsultaCalendario[] {
 }
 
 export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
+  const insets = useSafeAreaInsets();
   const { tema, modo, alternar } = useTema();
   const toast = useToast();
 
@@ -98,9 +99,14 @@ export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
     });
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
-      edges={["top", "left", "right"]}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: tema.cores.fundo.primario,
+        paddingTop: insets.top,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
     >
       {/* Header fixo */}
       <View
@@ -149,9 +155,10 @@ export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
       </View>
 
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           padding: tema.espacamento.lg,
-          paddingBottom: 120, // espaço para a BarraInferior
+          paddingBottom: 120 + insets.bottom,
           gap: tema.espacamento.xl,
         }}
       >
@@ -609,7 +616,15 @@ export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
       </ScrollView>
 
       {/* BarraInferior fixa */}
-      <View style={{ position: "absolute", left: 0, right: 0, bottom: 0 }}>
+      <View
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          paddingBottom: insets.bottom,
+        }}
+      >
         <BarraInferior
           chaveAtiva={chaveBarra}
           aoSelecionar={setChaveBarra}
@@ -717,7 +732,7 @@ export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

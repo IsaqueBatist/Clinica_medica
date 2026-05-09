@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { TelaPlaceholder } from "../../screens/Placeholder";
 import { TelaConsultaMarcacao } from "../../screens/consulta/TelaConsultaMarcacao";
+import { ConfirmarConsultasScreen } from "../../screens/consulta/ConfirmarConsultasScreen";
+import { CancelarConsultasScreen } from "../../screens/consulta/CancelarConsultasScreen";
 import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ConsultasStackParamList } from "../types";
@@ -26,8 +28,8 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.ConsultaConfirmacao}
-        component={TelaPlaceholder}
-        options={{ title: "Confirmar consulta" }}
+        component={ConfirmarConsultasScreen}
+        options={{ title: "Confirmar consulta", headerShown: false }}
       />
       <Stack.Screen
         name={Routes.ConsultaRealizacao}
@@ -41,8 +43,8 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.ConsultaCancelamento}
-        component={TelaPlaceholder}
-        options={{ title: "Cancelar consulta" }}
+        component={CancelarConsultasScreen}
+        options={{ title: "Cancelar consulta", headerShown: false }}
       />
       <Stack.Screen
         name={Routes.DetalheConsulta}
