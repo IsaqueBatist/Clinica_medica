@@ -10,6 +10,6 @@ export interface Medico {
   endereco: Endereco;
   telefones: string[];
   especialidade: Especialidade;
-  diasAtendimento: DiasAtendimento[];
+  diasAtendimento?: DiasAtendimento[];
   status: StatusPessoa;
 }

@@ -41,7 +41,7 @@ export interface ServicoConsulta {
     filtro: FiltrosConsulta,
     page?: number,
     limit?: number,
-  ): Promise<PaginatedResult<Consulta[]>>;
+  ): Promise<PaginatedResult<Consulta>>;
   marcarConsulta(data: MarcarConsultaDTO): Promise<Consulta>;
   realizarConsulta(
     idConsulta: string,
@@ -53,6 +53,10 @@ export interface ServicoConsulta {
   ): Promise<void>;
   confirmarConsulta(idConsulta: string): Promise<void>;
   cancelarConsulta(
+    idConsulta: string,
+    data: CancelarConsultaDTO,
+  ): Promise<void>;
+  cancelarConsultaMedico(
     idConsulta: string,
     data: CancelarConsultaDTO,
   ): Promise<void>;

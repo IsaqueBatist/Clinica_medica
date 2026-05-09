@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -6,6 +6,7 @@ import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
 import { TelaLogin } from "./src/screens/Login";
 import { AppNavigator } from "./src/navigation";
+import { ProvedoresApp } from "./src/contexts";
 
 /**
  * Entrada do app.
@@ -24,17 +25,18 @@ import { AppNavigator } from "./src/navigation";
  */
 export default function App() {
   const [autenticado, setAutenticado] = useState(false);
-
   return (
     <SafeAreaProvider>
       <ProvedorTema modoInicial="claro">
         <ProvedorToast>
-          <StatusBar style="auto" />
-          {autenticado ? (
-            <AppNavigator aoSair={() => setAutenticado(false)} />
-          ) : (
-            <TelaLogin aoEntrar={() => setAutenticado(true)} />
-          )}
+          <ProvedoresApp>
+            <StatusBar style="auto" />
+            {autenticado ? (
+              <AppNavigator aoSair={() => setAutenticado(false)} />
+            ) : (
+              <TelaLogin aoEntrar={() => setAutenticado(true)} />
+            )}
+          </ProvedoresApp>
         </ProvedorToast>
       </ProvedorTema>
     </SafeAreaProvider>
