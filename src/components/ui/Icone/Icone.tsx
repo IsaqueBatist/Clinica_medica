@@ -92,7 +92,6 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
           <View
             style={{
               position: "absolute",
-              top: t * 0.1,
               width: t * 0.9,
               height: t * 0.55,
               borderTopWidth: traco,

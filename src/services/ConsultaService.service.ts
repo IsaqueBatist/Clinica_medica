@@ -3,6 +3,7 @@ import { STATUS_CONSULTA } from "../constants/consulta";
 import { Consulta } from "../types/models/consulta.type";
 import { ServicoConsulta } from "../types/services/ConsultaService.service.type";
 import { delay } from "../utils/delay";
+import { assertTransition } from "../utils/consultaStateMachine";
 
 const mesmoDia = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() &&
@@ -79,6 +80,8 @@ export const servicoConsulta: ServicoConsulta = {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);
     }
 
+    assertTransition(consultasMock[index].situacao, STATUS_CONSULTA.REALIZADA);
+
     consultasMock[index] = {
       ...consultasMock[index],
       ...data,
@@ -93,6 +96,8 @@ export const servicoConsulta: ServicoConsulta = {
     if (index === -1) {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);
     }
+
+    assertTransition(consultasMock[index].situacao, STATUS_CONSULTA.ENCERRADA);
 
     consultasMock[index] = {
       ...consultasMock[index],
@@ -109,6 +114,8 @@ export const servicoConsulta: ServicoConsulta = {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);
     }
 
+    assertTransition(consultasMock[index].situacao, STATUS_CONSULTA.CONFIRMADA);
+
     consultasMock[index].situacao = STATUS_CONSULTA.CONFIRMADA;
   },
 
@@ -119,6 +126,11 @@ export const servicoConsulta: ServicoConsulta = {
     if (index === -1) {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);
     }
+
+    assertTransition(
+      consultasMock[index].situacao,
+      STATUS_CONSULTA.CANCELADA_PELO_CLIENTE,
+    );
 
     consultasMock[index] = {
       ...consultasMock[index],
@@ -132,6 +144,11 @@ export const servicoConsulta: ServicoConsulta = {
     if (index === -1) {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);
     }
+
+    assertTransition(
+      consultasMock[index].situacao,
+      STATUS_CONSULTA.CANCELADA_PELO_MEDICO,
+    );
 
     consultasMock[index] = {
       ...consultasMock[index],
