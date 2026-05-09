@@ -2,6 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { TelaPlaceholder } from "../screens/Placeholder";
+import { MarcarConsultaScreen } from "../screens/consulta/MarcarConsultaScreen";
 import { useTema } from "../hooks/useTema";
 import { Routes } from "../constants/routes";
 import { CustomDrawerContent } from "./components/CustomDrawerContent";
@@ -55,7 +56,7 @@ export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
       <Drawer.Screen name={Routes.ListarClientes} component={TelaPlaceholder} />
 
       <Drawer.Screen name={Routes.ListarConsultas} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaMarcacao} component={TelaPlaceholder} />
+      <Drawer.Screen name={Routes.ConsultaMarcacao} component={MarcarConsultaScreen} />
       <Drawer.Screen name={Routes.ConsultaConfirmacao} component={TelaPlaceholder} />
       <Drawer.Screen name={Routes.ConsultaRealizacao} component={TelaPlaceholder} />
       <Drawer.Screen name={Routes.ConsultaEncerramento} component={TelaPlaceholder} />
