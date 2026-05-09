@@ -6,3 +6,4 @@ export { useContextoEspecialidade } from "./useContextoEspecialidade";
 export { useContextoConsulta } from "./useContextoConsulta";
 export { useConsultasParaConfirmar } from "./useConsultasParaConfirmar";
 export { useConsultasParaCancelarPeloCliente } from "./useConsultasParaCancelarPeloCliente";
+export { useTemporizadorNaoComparecimento } from "./useTemporizadorNaoComparecimento";

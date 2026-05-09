@@ -16,19 +16,13 @@ function formatarHora(d: Date): string {
 export interface PropsConsultaConfirmavelItem {
   consulta: Consulta;
   aoConfirmar: () => void;
-  aoNaoCompareceu?: () => void;
-  mostrarNaoCompareceu?: boolean;
   carregandoConfirmar?: boolean;
-  carregandoNaoCompareceu?: boolean;
 }
 
 export function ConsultaConfirmavelItem({
   consulta,
   aoConfirmar,
-  aoNaoCompareceu,
-  mostrarNaoCompareceu = false,
   carregandoConfirmar = false,
-  carregandoNaoCompareceu = false,
 }: PropsConsultaConfirmavelItem) {
   const { tema } = useTema();
 
@@ -47,25 +41,14 @@ export function ConsultaConfirmavelItem({
         <Texto variante="legenda" cor="texto.suave">
           {consulta.medico.especialidade.nome}
         </Texto>
-        <View style={{ gap: tema.espacamento.sm, marginTop: tema.espacamento.sm }}>
+        <View style={{ marginTop: tema.espacamento.sm }}>
           <Botao
             rotulo="Confirmar presença"
             variante="primario"
             larguraTotal
             carregando={carregandoConfirmar}
-            disabled={carregandoNaoCompareceu}
             onPress={aoConfirmar}
           />
-          {mostrarNaoCompareceu && aoNaoCompareceu ? (
-            <Botao
-              rotulo="Não compareceu"
-              variante="secundario"
-              larguraTotal
-              carregando={carregandoNaoCompareceu}
-              disabled={carregandoConfirmar}
-              onPress={aoNaoCompareceu}
-            />
-          ) : null}
         </View>
       </View>
     </Card>
