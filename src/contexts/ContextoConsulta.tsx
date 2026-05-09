@@ -51,7 +51,8 @@ type AcaoConsulta =
   | {
       type: "CANCELAR_MEDICO";
       payload: { numero: string; dados: CancelarConsultaDTO };
-    };
+    }
+  | { type: "CANCELAR_NAO_COMPARECIMENTO"; payload: { numero: string } };
 
 export interface ValorContextoConsulta {
   state: EstadoConsulta;
@@ -70,6 +71,8 @@ export interface ValorContextoConsulta {
     numero: string,
     dto: CancelarConsultaDTO,
   ) => Promise<void>;
+  cancelarPorNaoComparecimento: (numero: string) => Promise<void>;
+  recarregarConsultas: () => Promise<void>;
 }
 
 function reducerConsulta(
@@ -148,6 +151,21 @@ function reducerConsulta(
                 ...c,
                 ...acao.payload.dados,
                 situacao: STATUS_CONSULTA.CANCELADA_PELO_MEDICO,
+              }
+            : c,
+        ),
+      };
+
+    case "CANCELAR_NAO_COMPARECIMENTO":
+      return {
+        ...estado,
+        items: estado.items.map((c) =>
+          c.numero === acao.payload.numero
+            ? {
+                ...c,
+                motivoCancelamento:
+                  "Paciente não compareceu ao atendimento agendado.",
+                situacao: STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
               }
             : c,
         ),
@@ -234,6 +252,22 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
     [],
   );
 
+  const cancelarPorNaoComparecimento = useCallback(async (numero: string) => {
+    await servicoConsulta.cancelarPorNaoComparecimento(numero);
+    dispatch({ type: "CANCELAR_NAO_COMPARECIMENTO", payload: { numero } });
+  }, []);
+
+  const recarregarConsultas = useCallback(async () => {
+    dispatch({ type: "CARREGAMENTO_INICIAR" });
+    try {
+      const resultado = await servicoConsulta.listar({}, 1, 1000);
+      dispatch({ type: "CARREGAMENTO_SUCESSO", payload: resultado.data });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Erro ao listar consultas";
+      dispatch({ type: "CARREGAMENTO_ERRO", payload: msg });
+    }
+  }, []);
+
   const valor = useMemo<ValorContextoConsulta>(
     () => ({
       state,
@@ -243,6 +277,8 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
       encerrarConsulta,
       cancelarConsultaPeloCliente,
       cancelarConsultaPeloMedico,
+      cancelarPorNaoComparecimento,
+      recarregarConsultas,
     }),
     [
       state,
@@ -252,6 +288,8 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
       encerrarConsulta,
       cancelarConsultaPeloCliente,
       cancelarConsultaPeloMedico,
+      cancelarPorNaoComparecimento,
+      recarregarConsultas,
     ],
   );
 

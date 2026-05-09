@@ -156,4 +156,24 @@ export const servicoConsulta: ServicoConsulta = {
       situacao: STATUS_CONSULTA.CANCELADA_PELO_MEDICO,
     };
   },
+
+  async cancelarPorNaoComparecimento(idConsulta) {
+    await delay();
+
+    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
+    if (index === -1) {
+      throw new Error(`Consulta '${idConsulta}' inexistente.`);
+    }
+
+    assertTransition(
+      consultasMock[index].situacao,
+      STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
+    );
+
+    consultasMock[index] = {
+      ...consultasMock[index],
+      motivoCancelamento: "Paciente não compareceu ao atendimento agendado.",
+      situacao: STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
+    };
+  },
 };

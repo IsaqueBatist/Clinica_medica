@@ -19,5 +19,5 @@ export const STATUS_CONSULTA_ROLE: Record<SituacaoConsulta, StatusRole> = {
   encerrada: "neutro",
   canceladaPeloCliente: "aviso",
   canceladaPeloMedico: "erro",
-  canceladaPorNaoComparecimento: "aviso",
+  canceladaPorNaoComparecimento: "erro",
 };
