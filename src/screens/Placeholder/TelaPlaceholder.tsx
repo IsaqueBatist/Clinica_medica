@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -20,14 +20,21 @@ import { Icone } from "../../components";
  * nome da rota. É só andaime — não tem regra de domínio aqui.
  */
 export function TelaPlaceholder() {
+  const insets = useSafeAreaInsets();
   const { tema } = useTema();
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const route = useRoute();
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
-      edges={["top", "left", "right"]}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: tema.cores.fundo.primario,
+        paddingTop: insets.top,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+        paddingBottom: insets.bottom,
+      }}
     >
       <View
         style={{
@@ -70,6 +77,6 @@ export function TelaPlaceholder() {
           Tela ainda não implementada. Será preenchida pelo Stack desta seção.
         </Texto>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

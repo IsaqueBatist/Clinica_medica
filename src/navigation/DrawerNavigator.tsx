@@ -7,6 +7,7 @@ import { useTema } from "../hooks/useTema";
 import { Routes } from "../constants/routes";
 import { CustomDrawerContent } from "./components/CustomDrawerContent";
 import type { DrawerParamList } from "./types";
+import { TelaListarClientes } from "../screens/Cliente/TelaListarClientes";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -52,15 +53,39 @@ export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
     >
       <Drawer.Screen name={Routes.Dashboard} component={TelaPlaceholder} />
 
-      <Drawer.Screen name={Routes.CadastroCliente} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ListarClientes} component={TelaPlaceholder} />
+      <Drawer.Screen
+        name={Routes.CadastroCliente}
+        component={TelaPlaceholder}
+      />
+      <Drawer.Screen
+        name={Routes.ListarClientes}
+        component={TelaListarClientes}
+      />
 
-      <Drawer.Screen name={Routes.ListarConsultas} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaMarcacao} component={MarcarConsultaScreen} />
-      <Drawer.Screen name={Routes.ConsultaConfirmacao} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaRealizacao} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaEncerramento} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaCancelamento} component={TelaPlaceholder} />
+      <Drawer.Screen
+        name={Routes.ListarConsultas}
+        component={TelaPlaceholder}
+      />
+      <Drawer.Screen
+        name={Routes.ConsultaMarcacao}
+        component={MarcarConsultaScreen}
+      />
+      <Drawer.Screen
+        name={Routes.ConsultaConfirmacao}
+        component={TelaPlaceholder}
+      />
+      <Drawer.Screen
+        name={Routes.ConsultaRealizacao}
+        component={TelaPlaceholder}
+      />
+      <Drawer.Screen
+        name={Routes.ConsultaEncerramento}
+        component={TelaPlaceholder}
+      />
+      <Drawer.Screen
+        name={Routes.ConsultaCancelamento}
+        component={TelaPlaceholder}
+      />
     </Drawer.Navigator>
   );
 }

@@ -1,6 +1,6 @@
 import { useCallback, useReducer, useState } from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { DrawerNavigationProp } from "@react-navigation/drawer";
 
@@ -29,6 +29,7 @@ const TITULO_STEP = {
 } as const;
 
 export function MarcarConsultaScreen() {
+  const insets = useSafeAreaInsets();
   const { tema } = useTema();
   const navigation =
     useNavigation<DrawerNavigationProp<DrawerParamList>>();
@@ -78,9 +79,14 @@ export function MarcarConsultaScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
-      edges={["top", "left", "right"]}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: tema.cores.fundo.primario,
+        paddingTop: insets.top,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
     >
       <View
         style={{
@@ -129,6 +135,7 @@ export function MarcarConsultaScreen() {
           flexDirection: "row",
           gap: tema.espacamento.md,
           padding: tema.espacamento.lg,
+          paddingBottom: tema.espacamento.lg + insets.bottom,
           borderTopWidth: 1,
           borderTopColor: tema.cores.borda.padrao,
           backgroundColor: tema.cores.fundo.superficie,
@@ -161,6 +168,6 @@ export function MarcarConsultaScreen() {
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

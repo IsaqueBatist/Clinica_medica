@@ -11,5 +11,6 @@
  */
 
 export * from "./feedback";
+export { FormScreen, type PropsFormScreen } from "./FormScreen";
 export * from "./navegacao";
 export * from "./ui";
