@@ -1,6 +1,6 @@
 import { Medico } from "../types/models/medico.type";
 import { especialidadesMock } from "./especialidades";
-import { STATUS_PESSOA } from "../constants/pessoa";
+import { STATUS_ENTIDADE } from "../constants/pessoa";
 import { DIA_SEMANA } from "../constants/agenda";
 
 const [clinicaGeral, cardiologia, pediatria, ortopedia] = especialidadesMock;
@@ -38,7 +38,7 @@ export const medicosMock: Medico[] = [
         tempoEstimado: 30,
       },
     ],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
   },
   {
     matricula: "MED002",
@@ -72,7 +72,7 @@ export const medicosMock: Medico[] = [
         tempoEstimado: 20,
       },
     ],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
   },
   {
     matricula: "MED003",
@@ -127,7 +127,7 @@ export const medicosMock: Medico[] = [
         tempoEstimado: 15,
       },
     ],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
   },
   {
     matricula: "MED004",
@@ -161,7 +161,7 @@ export const medicosMock: Medico[] = [
         tempoEstimado: 40,
       },
     ],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
   },
   {
     matricula: "MED005",
@@ -202,6 +202,6 @@ export const medicosMock: Medico[] = [
         tempoEstimado: 30,
       },
     ],
-    status: STATUS_PESSOA.INATIVO,
+    status: STATUS_ENTIDADE.INATIVO,
   },
 ];

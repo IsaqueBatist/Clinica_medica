@@ -1,7 +1,7 @@
 import { SituacaoConsulta } from "../../constants/consulta";
 import { Cliente } from "../models/cliente.type";
 import { Consulta } from "../models/consulta.type";
-import { Medico } from "./MedicoService.service.type";
+import { Medico } from "../models/medico.type";
 import { PaginatedResult } from "./services";
 
 interface FiltrosConsulta {

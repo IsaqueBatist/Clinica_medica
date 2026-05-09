@@ -21,8 +21,12 @@ import { ENTRADAS_DRAWER, type DrawerParamList } from "../types";
  *    Estado de expansão é local (`useState`) e persiste durante a sessão
  *    porque o componente não desmonta quando o drawer fecha.
  *
- * `aoSair` é injetado pelo `DrawerNavigator` via prop `drawerContent`. O Drawer
- * em si não conhece auth — a decisão fica no nível de cima (App).
+ * Detecção de "ativo" precisa olhar duas camadas: o nome do Stack ativo
+ * (rota do Drawer) E o nome da tela interna ativa (rota do Stack filho).
+ * Sem a tela interna, todos os subitens de um grupo ficariam destacados ao
+ * mesmo tempo enquanto a seção estivesse aberta.
+ *
+ * `aoSair` é injetado pelo `DrawerNavigator` via prop `drawerContent`.
  */
 export interface PropsCustomDrawerContent extends DrawerContentComponentProps {
   aoSair?: () => void;
@@ -34,7 +38,18 @@ export function CustomDrawerContent({
   aoSair,
 }: PropsCustomDrawerContent) {
   const { tema, modo, alternar } = useTema();
-  const rotaAtiva = state.routes[state.index]?.name as keyof DrawerParamList;
+
+  // Stack ativo (rota do Drawer): "DashboardStack", "ClientesStack" ou "ConsultasStack".
+  const rotaDrawerAtiva = state.routes[state.index];
+  const stackAtivo = rotaDrawerAtiva?.name as keyof DrawerParamList;
+
+  // Tela ativa DENTRO do Stack (ex: "CadastroCliente"). Pode ser undefined se
+  // o Stack ainda não foi montado nesta sessão.
+  const estadoStack = rotaDrawerAtiva?.state as
+    | { index?: number; routes?: { name: string }[] }
+    | undefined;
+  const telaInternaAtiva =
+    estadoStack?.routes?.[estadoStack.index ?? 0]?.name;
 
   // Inicia com todos os grupos abertos. Mantemos em state para que, se o user
   // colapsar um grupo, a preferência persista até o app fechar.
@@ -80,7 +95,7 @@ export function CustomDrawerContent({
         >
           {ENTRADAS_DRAWER.map((entrada) => {
             if (entrada.tipo === "item") {
-              const ativo = entrada.nome === rotaAtiva;
+              const ativo = entrada.nome === stackAtivo;
               return (
                 <ItemNavegacao
                   key={entrada.nome}
@@ -94,7 +109,7 @@ export function CustomDrawerContent({
 
             const aberto = !!abertos[entrada.chave];
             const algumFilhoAtivo = entrada.itens.some(
-              (i) => i.nome === rotaAtiva,
+              (i) => i.stack === stackAtivo,
             );
 
             return (
@@ -149,14 +164,20 @@ export function CustomDrawerContent({
                     }}
                   >
                     {entrada.itens.map((subitem) => {
-                      const ativo = subitem.nome === rotaAtiva;
+                      const ativo =
+                        subitem.stack === stackAtivo &&
+                        subitem.tela === telaInternaAtiva;
                       return (
                         <ItemNavegacao
-                          key={subitem.nome}
+                          key={`${subitem.stack}/${subitem.tela}`}
                           rotulo={subitem.rotulo}
                           icone={subitem.icone}
                           ativo={ativo}
-                          onPress={() => navigation.navigate(subitem.nome)}
+                          onPress={() =>
+                            navigation.navigate(subitem.stack, {
+                              screen: subitem.tela,
+                            } as never)
+                          }
                         />
                       );
                     })}

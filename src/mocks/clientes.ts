@@ -1,4 +1,4 @@
-import { SEXO, STATUS_PESSOA } from "../constants/pessoa";
+import { SEXO, STATUS_ENTIDADE } from "../constants/pessoa";
 import { Cliente } from "../types/models/cliente.type";
 
 export const clientesMock: Cliente[] = [
@@ -11,7 +11,7 @@ export const clientesMock: Cliente[] = [
     cpf: "123.456.789-01",
     email: "mariana.souza@email.com",
     telefones: ["(11) 99876-5432", "(11) 3344-5566"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     endereco: {
       id: "END-001",
       cep: "01310-100",
@@ -31,7 +31,7 @@ export const clientesMock: Cliente[] = [
     dataNascimento: new Date("2020-08-12"),
     cpf: "234.567.890-12",
     telefones: ["(11) 98765-4321"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     endereco: {
       id: "END-002",
       cep: "04567-010",
@@ -52,7 +52,7 @@ export const clientesMock: Cliente[] = [
     cpf: "345.678.901-23",
     email: "carlos.andrade@email.com",
     telefones: ["(21) 99988-7766"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     endereco: {
       id: "END-003",
       cep: "22070-001",
@@ -73,7 +73,7 @@ export const clientesMock: Cliente[] = [
     cpf: "456.789.012-34",
     email: "ana.ferreira@email.com",
     telefones: ["(11) 97777-3322"],
-    status: STATUS_PESSOA.INATIVO,
+    status: STATUS_ENTIDADE.INATIVO,
   },
   {
     identificacao: "CLI005",
@@ -83,7 +83,7 @@ export const clientesMock: Cliente[] = [
     cpf: "567.890.123-45",
     email: "lucas.almeida@email.com",
     telefones: ["(11) 96666-1122", "(11) 2233-4455"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     endereco: {
       id: "END-004",
       cep: "05409-002",
@@ -102,7 +102,7 @@ export const clientesMock: Cliente[] = [
     dataNascimento: new Date("2010-09-30"),
     cpf: "678.901.234-56",
     telefones: ["(11) 95555-9988"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     convenio: { matricula: "SUL-554433", nome: "SulAmérica" },
   },
   {
@@ -113,7 +113,7 @@ export const clientesMock: Cliente[] = [
     rg: "34.567.890-1",
     cpf: "789.012.345-67",
     telefones: ["(31) 99444-8877"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
     endereco: {
       id: "END-005",
       cep: "30130-010",
@@ -134,7 +134,7 @@ export const clientesMock: Cliente[] = [
     cpf: "890.123.456-78",
     email: "patricia.ribeiro@email.com",
     telefones: ["(11) 93333-2211"],
-    status: STATUS_PESSOA.INATIVO,
+    status: STATUS_ENTIDADE.INATIVO,
   },
   {
     identificacao: "CLI009",
@@ -144,7 +144,7 @@ export const clientesMock: Cliente[] = [
     cpf: "901.234.567-89",
     email: "sam.oliveira@email.com",
     telefones: ["(11) 92222-1100"],
-    status: STATUS_PESSOA.ATIVO,
+    status: STATUS_ENTIDADE.ATIVO,
   },
   {
     identificacao: "CLI010",
@@ -153,6 +153,6 @@ export const clientesMock: Cliente[] = [
     dataNascimento: new Date("1988-02-14"),
     cpf: "012.345.678-90",
     telefones: ["(11) 91111-0099"],
-    status: STATUS_PESSOA.INATIVO,
+    status: STATUS_ENTIDADE.INATIVO,
   },
 ];

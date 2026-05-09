@@ -1,10 +1,7 @@
 import { DiasAtendimento } from "../models/diasAtendimento.type";
 
 export type RegistrarDiasAtendimento = Omit<DiasAtendimento, "identificacao">;
-export type EditarDiasAtendimento = Omit<
-  DiasAtendimento,
-  "identificacao" | "medico"
->;
+export type EditarDiasAtendimento = Omit<DiasAtendimento, "identificacao">;
 
 export interface DiasAtendimentoService {
   listar(identificacaoMedico: string): Promise<DiasAtendimento>;

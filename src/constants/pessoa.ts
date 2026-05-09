@@ -1,8 +1,9 @@
-export const STATUS_PESSOA = {
+export const STATUS_ENTIDADE = {
   ATIVO: "ativo",
   INATIVO: "inativo",
 } as const;
-export type StatusPessoa = (typeof STATUS_PESSOA)[keyof typeof STATUS_PESSOA];
+export type StatusPessoa =
+  (typeof STATUS_ENTIDADE)[keyof typeof STATUS_ENTIDADE];
 
 export const STATUS_PESSOA_LABEL = {
   ativo: "Ativo",

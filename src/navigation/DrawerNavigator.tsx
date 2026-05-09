@@ -1,10 +1,12 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { TelaPlaceholder } from "../screens/Placeholder";
 import { useTema } from "../hooks/useTema";
 import { Routes } from "../constants/routes";
 import { CustomDrawerContent } from "./components/CustomDrawerContent";
+import { DashboardStack } from "./stacks/DashboardStack";
+import { ClientesStack } from "./stacks/ClientesStack";
+import { ConsultasStack } from "./stacks/ConsultasStack";
 import type { DrawerParamList } from "./types";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -12,19 +14,12 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 /**
  * DrawerNavigator — gaveta principal do app autenticado.
  *
- * Cada `Drawer.Screen` registra uma rota. O componente apontado é hoje a
- * `TelaPlaceholder`; quando você for implementar uma seção, troque o
- * `component={TelaPlaceholder}` da linha correspondente pelo seu componente
- * real (ou por um Stack aninhado, ver `README.md`).
+ * Cada `Drawer.Screen` registra uma SEÇÃO inteira (não uma tela única). Cada
+ * seção é um Stack próprio — `DashboardStack`, `ClientesStack`, `ConsultasStack`.
+ * As telas individuais vivem dentro desses Stacks (ver `stacks/*.tsx`).
  *
- * Detalhe importante: o Drawer do react-navigation é FLAT — todas as rotas
- * (Cadastrar, Listar, ...) são irmãs. A *hierarquia visual* (grupo "Clientes"
- * com filhos "Cadastrar"/"Listar") é puramente do `CustomDrawerContent` e vem
- * de `ENTRADAS_DRAWER` em `types.ts`.
- *
- * `headerShown: false` porque cada tela renderiza o próprio header com o botão
- * de hamburger. Quando viramos Stack, o header passa a ser do Stack — mantém
- * a hierarquia consistente.
+ * `headerShown: false` desliga o header do Drawer — quem desenha o header é o
+ * `AppHeader` aplicado em cada Stack via `screenOptions.header`. Decisão NAV-01.
  */
 export interface PropsDrawerNavigator {
   aoSair?: () => void;
@@ -49,17 +44,9 @@ export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
         sceneStyle: { backgroundColor: tema.cores.fundo.primario },
       }}
     >
-      <Drawer.Screen name={Routes.Dashboard} component={TelaPlaceholder} />
-
-      <Drawer.Screen name={Routes.CadastroCliente} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ListarClientes} component={TelaPlaceholder} />
-
-      <Drawer.Screen name={Routes.ListarConsultas} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaMarcacao} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaConfirmacao} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaRealizacao} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaEncerramento} component={TelaPlaceholder} />
-      <Drawer.Screen name={Routes.ConsultaCancelamento} component={TelaPlaceholder} />
+      <Drawer.Screen name={Routes.DashboardStack} component={DashboardStack} />
+      <Drawer.Screen name={Routes.ClientesStack} component={ClientesStack} />
+      <Drawer.Screen name={Routes.ConsultasStack} component={ConsultasStack} />
     </Drawer.Navigator>
   );
 }

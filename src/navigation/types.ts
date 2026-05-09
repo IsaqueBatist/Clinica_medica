@@ -1,5 +1,6 @@
 import type { NomeIcone } from "../components/ui/Icone";
 import { Routes } from "../constants/routes";
+import type { NavigatorScreenParams } from "@react-navigation/native";
 
 /**
  * Tipagem das rotas do Drawer raiz.
@@ -13,21 +14,37 @@ import { Routes } from "../constants/routes";
  * (ex: editar cliente precisa do `id`), troque por `{ id: string }` e o
  * `navigation.navigate` passa a exigir o parâmetro tipado.
  */
-export type DrawerParamList = {
+
+export type DashboardStackParamList = {
   [Routes.Dashboard]: undefined;
-  [Routes.CadastroCliente]: undefined;
+};
+
+export type ClientesStackParamList = {
   [Routes.ListarClientes]: undefined;
+  [Routes.CadastroCliente]: undefined;
+  [Routes.DetalheCliente]: { id: string };
+};
+
+export type ConsultasStackParamList = {
   [Routes.ListarConsultas]: undefined;
   [Routes.ConsultaMarcacao]: undefined;
   [Routes.ConsultaConfirmacao]: undefined;
   [Routes.ConsultaRealizacao]: undefined;
   [Routes.ConsultaEncerramento]: undefined;
   [Routes.ConsultaCancelamento]: undefined;
+  [Routes.DetalheConsulta]: { id: string };
+};
+
+export type DrawerParamList = {
+  [Routes.DashboardStack]: NavigatorScreenParams<DashboardStackParamList>;
+  [Routes.ClientesStack]: NavigatorScreenParams<ClientesStackParamList>;
+  [Routes.ConsultasStack]: NavigatorScreenParams<ConsultasStackParamList>;
 };
 
 /** Subitem dentro de um grupo do drawer. */
 export interface SubItemDrawer {
-  nome: keyof DrawerParamList;
+  stack: keyof DrawerParamList;
+  tela: string;
   rotulo: string;
   icone?: NomeIcone;
 }
@@ -63,7 +80,7 @@ export type EntradaDrawer =
 export const ENTRADAS_DRAWER: EntradaDrawer[] = [
   {
     tipo: "item",
-    nome: Routes.Dashboard,
+    nome: Routes.DashboardStack,
     rotulo: "Início",
     icone: "casa",
   },
@@ -73,8 +90,18 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
     rotulo: "Clientes",
     icone: "usuario",
     itens: [
-      { nome: Routes.CadastroCliente, rotulo: "Cadastrar", icone: "mais" },
-      { nome: Routes.ListarClientes, rotulo: "Listar", icone: "menu" },
+      {
+        stack: Routes.ClientesStack,
+        tela: Routes.CadastroCliente,
+        rotulo: "Cadastrar",
+        icone: "mais",
+      },
+      {
+        stack: Routes.ClientesStack,
+        tela: Routes.ListarClientes,
+        rotulo: "Listar",
+        icone: "menu",
+      },
     ],
   },
   {
@@ -83,12 +110,42 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
     rotulo: "Consultas",
     icone: "calendario",
     itens: [
-      { nome: Routes.ListarConsultas, rotulo: "Listar", icone: "menu" },
-      { nome: Routes.ConsultaMarcacao, rotulo: "Marcar", icone: "mais" },
-      { nome: Routes.ConsultaConfirmacao, rotulo: "Confirmar", icone: "check" },
-      { nome: Routes.ConsultaRealizacao, rotulo: "Realizar", icone: "calendario" },
-      { nome: Routes.ConsultaEncerramento, rotulo: "Encerrar", icone: "editar" },
-      { nome: Routes.ConsultaCancelamento, rotulo: "Cancelar", icone: "fechar" },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ListarConsultas,
+        rotulo: "Listar",
+        icone: "menu",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ConsultaMarcacao,
+        rotulo: "Marcar",
+        icone: "mais",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ConsultaConfirmacao,
+        rotulo: "Confirmar",
+        icone: "check",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ConsultaRealizacao,
+        rotulo: "Realizar",
+        icone: "calendario",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ConsultaEncerramento,
+        rotulo: "Encerrar",
+        icone: "editar",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ConsultaCancelamento,
+        rotulo: "Cancelar",
+        icone: "fechar",
+      },
     ],
   },
 ];

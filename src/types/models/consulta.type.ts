@@ -13,11 +13,11 @@ export interface Consulta {
   dataHora: Date;
   situacao: SituacaoConsulta;
   tipo: TipoConsulta;
-  formaPagamento: FormaPagamento;
-  valor: number;
-  laudo: string;
-  receita: string;
-  motivoCancelamento: string;
-  procedimentos: string;
-  observacao: string;
+  formaPagamento?: FormaPagamento;
+  valor?: number;
+  laudo?: string;
+  receita?: string;
+  motivoCancelamento?: string;
+  procedimentos?: string;
+  observacao?: string;
 }
