@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -25,6 +25,7 @@ import { ProvedoresApp } from "./src/contexts";
  */
 export default function App() {
   const [autenticado, setAutenticado] = useState(false);
+
   return (
     <SafeAreaProvider>
       <ProvedorTema modoInicial="claro">
