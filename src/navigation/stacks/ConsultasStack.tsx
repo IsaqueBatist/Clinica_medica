@@ -2,6 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { TelaPlaceholder } from "../../screens/Placeholder";
+import { TelaConsultaMarcacao } from "../../screens/consulta/TelaConsultaMarcacao";
 import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ConsultasStackParamList } from "../types";
@@ -20,8 +21,8 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.ConsultaMarcacao}
-        component={TelaPlaceholder}
-        options={{ title: "Marcar consulta" }}
+        component={TelaConsultaMarcacao}
+        options={{ title: "Marcar consulta", headerShown: false }}
       />
       <Stack.Screen
         name={Routes.ConsultaConfirmacao}

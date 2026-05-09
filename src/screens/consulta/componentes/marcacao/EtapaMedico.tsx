@@ -1,16 +1,17 @@
 import { FlatList, Pressable, View } from "react-native";
+
 import { useContextoMedico } from "../../../../hooks";
 import { Texto } from "../../../../components/ui/Texto";
 import { useTema } from "../../../../hooks/useTema";
 import { STATUS_ENTIDADE } from "../../../../constants/pessoa";
-import { WizardAction, WizardState } from "../../marcacaoTypes";
+import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
 
 interface Props {
-  state: WizardState;
-  dispatch: React.Dispatch<WizardAction>;
+  state: EstadoMarcacao;
+  dispatch: React.Dispatch<AcaoMarcacao>;
 }
 
-export function StepMedico({ state, dispatch }: Props) {
+export function EtapaMedico({ state, dispatch }: Props) {
   const { tema } = useTema();
   const { state: medicosState } = useContextoMedico();
 

@@ -15,11 +15,11 @@ import type { Consulta } from "../../../../types/models/consulta.type";
 import type { DiasAtendimento } from "../../../../types/models/diasAtendimento.type";
 import type { Medico } from "../../../../types/models/medico.type";
 import type { PaletaCores } from "../../../../types/paletaCores.type";
-import { WizardAction, WizardState } from "../../marcacaoTypes";
+import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
 
 interface Props {
-  state: WizardState;
-  dispatch: React.Dispatch<WizardAction>;
+  state: EstadoMarcacao;
+  dispatch: React.Dispatch<AcaoMarcacao>;
 }
 
 const NOMES_MES = [
@@ -117,20 +117,17 @@ function montarSlotsDoDia(
   );
 
   return gerarSlotsDoDia(dia, atendsDoDia, agora).map((dataHora) => {
-    const consulta = consultasDoMedico.find((c) =>
-      mesmoDia(c.dataHora, dataHora) &&
-      c.dataHora.getHours() === dataHora.getHours() &&
-      c.dataHora.getMinutes() === dataHora.getMinutes(),
+    const consulta = consultasDoMedico.find(
+      (c) =>
+        mesmoDia(c.dataHora, dataHora) &&
+        c.dataHora.getHours() === dataHora.getHours() &&
+        c.dataHora.getMinutes() === dataHora.getMinutes(),
     );
     return { dataHora, status: statusDoSlotConsulta(consulta) };
   });
 }
 
-type SituacaoDia =
-  | "passado"
-  | "sem_atendimento"
-  | "lotado"
-  | "disponivel";
+type SituacaoDia = "passado" | "sem_atendimento" | "lotado" | "disponivel";
 
 function situacaoDoDia(
   dia: Date,
@@ -151,7 +148,7 @@ function corStatus(status: StatusAgenda, cores: PaletaCores) {
   return cores.status[STATUS_AGENDA_ROLE[status]];
 }
 
-export function StepAgenda({ state, dispatch }: Props) {
+export function EtapaAgenda({ state, dispatch }: Props) {
   const { tema } = useTema();
   const { state: consultasState } = useContextoConsulta();
 
@@ -167,7 +164,12 @@ export function StepAgenda({ state, dispatch }: Props) {
 
   const slotsDoDia = useMemo(() => {
     if (!medico || !diaSelecionado) return [];
-    return montarSlotsDoDia(diaSelecionado, medico, consultasState.items, agora);
+    return montarSlotsDoDia(
+      diaSelecionado,
+      medico,
+      consultasState.items,
+      agora,
+    );
   }, [medico, diaSelecionado, consultasState.items, agora]);
 
   if (!medico) {
@@ -296,10 +298,7 @@ function Calendario({
 
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         {celulas.map((dia, idx) => (
-          <View
-            key={idx}
-            style={{ width: `${100 / 7}%`, padding: 2 }}
-          >
+          <View key={idx} style={{ width: `${100 / 7}%`, padding: 2 }}>
             {dia ? (
               <CelulaDia
                 dia={dia}
@@ -354,7 +353,12 @@ interface PropsCelulaDia {
   aoSelecionar: (d: Date) => void;
 }
 
-function CelulaDia({ dia, situacao, selecionado, aoSelecionar }: PropsCelulaDia) {
+function CelulaDia({
+  dia,
+  situacao,
+  selecionado,
+  aoSelecionar,
+}: PropsCelulaDia) {
   const { tema } = useTema();
   const desabilitado = situacao !== "disponivel";
 
@@ -383,7 +387,11 @@ function CelulaDia({ dia, situacao, selecionado, aoSelecionar }: PropsCelulaDia)
         opacity: desabilitado && !selecionado ? 0.5 : 1,
       }}
     >
-      <Texto variante="legenda" peso={selecionado ? "negrito" : "regular"} cor={corTexto}>
+      <Texto
+        variante="legenda"
+        peso={selecionado ? "negrito" : "regular"}
+        cor={corTexto}
+      >
         {dia.getDate()}
       </Texto>
     </Pressable>
@@ -411,7 +419,10 @@ function ListaSlots({
     return (
       <View>
         <TituloDia dia={dia} />
-        <Texto cor="texto.secundario" style={{ marginTop: tema.espacamento.sm }}>
+        <Texto
+          cor="texto.secundario"
+          style={{ marginTop: tema.espacamento.sm }}
+        >
           Médico não atende neste dia.
         </Texto>
       </View>
@@ -446,8 +457,13 @@ function TituloDia({ dia }: { dia: Date }) {
 }
 
 const NOMES_DIA_SEMANA_LONGOS = [
-  "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
-  "Quinta-feira", "Sexta-feira", "Sábado",
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
 ];
 
 interface PropsCelulaSlot {

@@ -1,6 +1,9 @@
 import { useContext } from "react";
 
-import { ContextoToast, type ValorContextoToast } from "../contexts/ContextoToast";
+import {
+  ContextoToast,
+  type ValorContextoToast,
+} from "../contexts/ContextoToast";
 
 /**
  * Hook para emitir toasts em qualquer lugar abaixo de `<ProvedorToast>`.

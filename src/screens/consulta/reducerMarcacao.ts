@@ -1,17 +1,17 @@
-import { WizardAction, WizardState, WizardStep } from "./marcacaoTypes";
+import { AcaoMarcacao, EstadoMarcacao, Etapa } from "./tiposMarcacao";
 
-export const ESTADO_INICIAL: WizardState = { step: "cliente" };
+export const ESTADO_INICIAL: EstadoMarcacao = { etapa: "cliente" };
 
-const ORDEM: WizardStep[] = ["cliente", "medico", "agenda", "resumo"];
+const ORDEM: Etapa[] = ["cliente", "medico", "agenda", "resumo"];
 
 export function reducerMarcacao(
-  estado: WizardState,
-  acao: WizardAction,
-): WizardState {
+  estado: EstadoMarcacao,
+  acao: AcaoMarcacao,
+): EstadoMarcacao {
   switch (acao.type) {
     case "SET_CLIENTE":
       return { ...estado, cliente: acao.payload, tipo: undefined };
-    case "SET_MEDICO":
+    case "SET_MEDICO": {
       const med = acao.payload;
       return {
         ...estado,
@@ -19,26 +19,28 @@ export function reducerMarcacao(
         especialidade: med.especialidade,
         dataHora: undefined,
       };
+    }
     case "SET_SLOT":
       return { ...estado, dataHora: acao.payload };
     case "SET_TIPO":
       return { ...estado, tipo: acao.payload };
     case "AVANCAR": {
-      const idx = ORDEM.indexOf(estado.step);
-      const proximo = ORDEM[Math.min(idx + 1, ORDEM.length - 1)];
-      return { ...estado, step: proximo };
+      const idx = ORDEM.indexOf(estado.etapa);
+      const proxima = ORDEM[Math.min(idx + 1, ORDEM.length - 1)];
+      return { ...estado, etapa: proxima };
     }
-    case "VOLTAR":
-      const idx = ORDEM.indexOf(estado.step);
+    case "VOLTAR": {
+      const idx = ORDEM.indexOf(estado.etapa);
       const anterior = ORDEM[Math.max(idx - 1, 0)];
-      return limparAPartirDe({ ...estado, step: anterior }, anterior);
+      return limparAPartirDe({ ...estado, etapa: anterior }, anterior);
+    }
     case "RESET":
       return ESTADO_INICIAL;
   }
 }
 
-function limparAPartirDe(estado: WizardState, step: WizardStep): WizardState {
-  switch (step) {
+function limparAPartirDe(estado: EstadoMarcacao, etapa: Etapa): EstadoMarcacao {
+  switch (etapa) {
     case "cliente":
       return {
         ...estado,
@@ -53,8 +55,8 @@ function limparAPartirDe(estado: WizardState, step: WizardStep): WizardState {
   }
 }
 
-export function podeAvancar(estado: WizardState): boolean {
-  switch (estado.step) {
+export function podeAvancar(estado: EstadoMarcacao): boolean {
+  switch (estado.etapa) {
     case "cliente":
       return !!estado.cliente;
     case "medico":

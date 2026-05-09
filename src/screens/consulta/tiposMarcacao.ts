@@ -3,10 +3,10 @@ import { Cliente } from "../../types/models/cliente.type";
 import { Especialidade } from "../../types/models/especialidade.type";
 import { Medico } from "../../types/models/medico.type";
 
-export type WizardStep = "cliente" | "medico" | "agenda" | "resumo";
+export type Etapa = "cliente" | "medico" | "agenda" | "resumo";
 
-export interface WizardState {
-  step: WizardStep;
+export interface EstadoMarcacao {
+  etapa: Etapa;
   cliente?: Cliente;
   medico?: Medico;
   especialidade?: Especialidade;
@@ -14,7 +14,7 @@ export interface WizardState {
   tipo?: TipoConsulta;
 }
 
-export type WizardAction =
+export type AcaoMarcacao =
   | { type: "SET_CLIENTE"; payload: Cliente }
   | { type: "SET_MEDICO"; payload: Medico }
   | { type: "SET_SLOT"; payload: Date }

@@ -15,23 +15,22 @@ import {
   ESTADO_INICIAL,
   podeAvancar,
   reducerMarcacao,
-} from "./marcacaoReducer";
-import { StepCliente } from "./components/marcacao/StepCliente";
-import { StepMedico } from "./components/marcacao/StepMedico";
-import { StepAgenda } from "./components/marcacao/StepAgenda";
-import { StepResumo } from "./components/marcacao/StepResumo";
+} from "./reducerMarcacao";
+import { EtapaCliente } from "./componentes/marcacao/EtapaCliente";
+import { EtapaMedico } from "./componentes/marcacao/EtapaMedico";
+import { EtapaAgenda } from "./componentes/marcacao/EtapaAgenda";
+import { EtapaResumo } from "./componentes/marcacao/EtapaResumo";
 
-const TITULO_STEP = {
+const TITULO_ETAPA = {
   cliente: "1 de 4 · Cliente",
   medico: "2 de 4 · Médico",
   agenda: "3 de 4 · Agenda",
   resumo: "4 de 4 · Resumo",
 } as const;
 
-export function MarcarConsultaScreen() {
+export function TelaConsultaMarcacao() {
   const { tema } = useTema();
-  const navigation =
-    useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
   const toast = useToast();
   const { marcarConsulta } = useContextoConsulta();
 
@@ -47,12 +46,7 @@ export function MarcarConsultaScreen() {
   );
 
   async function confirmar() {
-    if (
-      !state.cliente ||
-      !state.medico ||
-      !state.dataHora ||
-      !state.tipo
-    ) {
+    if (!state.cliente || !state.medico || !state.dataHora || !state.tipo) {
       return;
     }
     setConfirmando(true);
@@ -99,28 +93,32 @@ export function MarcarConsultaScreen() {
           rotuloAcessivel="Abrir menu"
           variante="neutro"
           tamanho={20}
-          onPress={() => navigation.openDrawer()}
+          onPress={() =>
+            navigation
+              .getParent<DrawerNavigationProp<DrawerParamList>>()
+              ?.openDrawer()
+          }
         />
         <Texto variante="corpo" peso="negrito" style={{ flex: 1 }}>
           Marcar consulta
         </Texto>
         <Texto variante="legenda" cor="texto.secundario">
-          {TITULO_STEP[state.step]}
+          {TITULO_ETAPA[state.etapa]}
         </Texto>
       </View>
 
       <View style={{ flex: 1 }}>
-        {state.step === "cliente" && (
-          <StepCliente state={state} dispatch={dispatch} />
+        {state.etapa === "cliente" && (
+          <EtapaCliente state={state} dispatch={dispatch} />
         )}
-        {state.step === "medico" && (
-          <StepMedico state={state} dispatch={dispatch} />
+        {state.etapa === "medico" && (
+          <EtapaMedico state={state} dispatch={dispatch} />
         )}
-        {state.step === "agenda" && (
-          <StepAgenda state={state} dispatch={dispatch} />
+        {state.etapa === "agenda" && (
+          <EtapaAgenda state={state} dispatch={dispatch} />
         )}
-        {state.step === "resumo" && (
-          <StepResumo state={state} dispatch={dispatch} />
+        {state.etapa === "resumo" && (
+          <EtapaResumo state={state} dispatch={dispatch} />
         )}
       </View>
 
@@ -134,7 +132,7 @@ export function MarcarConsultaScreen() {
           backgroundColor: tema.cores.fundo.superficie,
         }}
       >
-        {state.step !== "cliente" && (
+        {state.etapa !== "cliente" && (
           <Botao
             rotulo="Voltar"
             variante="secundario"
@@ -143,7 +141,7 @@ export function MarcarConsultaScreen() {
           />
         )}
         <View style={{ flex: 1 }}>
-          {state.step !== "resumo" ? (
+          {state.etapa !== "resumo" ? (
             <Botao
               rotulo="Próximo"
               larguraTotal

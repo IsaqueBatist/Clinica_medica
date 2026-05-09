@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
+
 import { useContextoConsulta } from "../../../../hooks";
 import { Texto } from "../../../../components/ui/Texto";
 import { Badge } from "../../../../components/ui/Badge";
@@ -11,11 +12,11 @@ import {
   TIPO_CONSULTA_LABEL,
 } from "../../../../constants/consulta";
 import { canCobrar } from "../../../../domain/consulta";
-import { WizardAction, WizardState } from "../../marcacaoTypes";
+import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
 
 interface Props {
-  state: WizardState;
-  dispatch: React.Dispatch<WizardAction>;
+  state: EstadoMarcacao;
+  dispatch: React.Dispatch<AcaoMarcacao>;
 }
 
 function pad(n: number): string {
@@ -26,7 +27,7 @@ function formatarDataHora(d: Date): string {
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} às ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-export function StepResumo({ state, dispatch }: Props) {
+export function EtapaResumo({ state, dispatch }: Props) {
   const { tema } = useTema();
   const { state: consultasState } = useContextoConsulta();
 
@@ -64,10 +65,7 @@ export function StepResumo({ state, dispatch }: Props) {
         <Divisor />
         <Linha rotulo="Médico" valor={state.medico?.nome} />
         <Divisor />
-        <Linha
-          rotulo="Especialidade"
-          valor={state.especialidade?.nome}
-        />
+        <Linha rotulo="Especialidade" valor={state.especialidade?.nome} />
         <Divisor />
         <Linha
           rotulo="Data e hora"

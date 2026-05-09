@@ -9,7 +9,7 @@ import { CampoFormulario } from "../../components/ui/CampoFormulario";
 import { EntradaTexto } from "../../components/ui/EntradaTexto";
 import { MarcaApp } from "../../components/ui/MarcaApp";
 import { Texto } from "../../components/ui/Texto";
-import { useContextCliente } from "../../hooks";
+import { useContextoCliente } from "../../hooks";
 
 /**
  * TelaLogin — exemplo de uso integrado: form, validação local, loading,
@@ -26,7 +26,7 @@ export interface PropsTelaLogin {
 export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
   const { tema } = useTema();
   const toast = useToast();
-  const { state } = useContextCliente();
+  const { state } = useContextoCliente();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
