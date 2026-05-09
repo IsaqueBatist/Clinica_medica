@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 
+import { useTemporizadorNaoComparecimento } from "../hooks/useTemporizadorNaoComparecimento";
 import { ProvedorCliente } from "./ContextoCliente";
 import { ProvedorMedico } from "./ContextoMedico";
 import { ProvedorEspecialidade } from "./ContextoEspecialidade";
@@ -7,6 +8,13 @@ import { ProvedorConsulta } from "./ContextoConsulta";
 
 interface PropsProvedoresApp {
   children: ReactNode;
+}
+
+// Wrapper sem render — só monta o temporizador (ator do caso de uso)
+// para ele ficar ativo enquanto o app autenticado estiver na árvore.
+function MotorTemporizador() {
+  useTemporizadorNaoComparecimento();
+  return null;
 }
 
 /**
@@ -23,7 +31,10 @@ export function ProvedoresApp({ children }: PropsProvedoresApp) {
     <ProvedorEspecialidade>
       <ProvedorCliente>
         <ProvedorMedico>
-          <ProvedorConsulta>{children}</ProvedorConsulta>
+          <ProvedorConsulta>
+            <MotorTemporizador />
+            {children}
+          </ProvedorConsulta>
         </ProvedorMedico>
       </ProvedorCliente>
     </ProvedorEspecialidade>

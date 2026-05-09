@@ -25,12 +25,18 @@ import { ToastViewport } from "../components/feedback/Toast/ToastViewport";
 
 export type VarianteToast = "sucesso" | "erro" | "aviso" | "info";
 
+export interface AcaoToast {
+  rotulo: string;
+  aoPressionar: () => void;
+}
+
 export interface Toast {
   id: string;
   variante: VarianteToast;
   titulo: string;
   descricao?: string;
   duracaoMs?: number;
+  acao?: AcaoToast;
 }
 
 export interface ValorContextoToast {

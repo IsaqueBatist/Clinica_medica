@@ -104,6 +104,26 @@ export function ToastItem({ toast, aoFechar }: PropsToastItem) {
             )}
           </View>
 
+          {toast.acao ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={toast.acao.rotulo}
+              hitSlop={8}
+              onPress={() => {
+                toast.acao?.aoPressionar();
+                aoFechar(toast.id);
+              }}
+              style={{
+                paddingHorizontal: tema.espacamento.sm,
+                justifyContent: "center",
+              }}
+            >
+              <Texto variante="legenda" peso="negrito" style={{ color: corBarra }}>
+                {toast.acao.rotulo}
+              </Texto>
+            </Pressable>
+          ) : null}
+
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Fechar notificação"

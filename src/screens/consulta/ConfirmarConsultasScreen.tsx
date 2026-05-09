@@ -2,9 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import {
   FlatList,
   LayoutAnimation,
-  Modal,
   Platform,
-  Pressable,
   RefreshControl,
   UIManager,
   View,
@@ -27,7 +25,6 @@ import { EmptyState } from "../../components/feedback/EmptyState";
 import type { DrawerParamList } from "../../navigation/types";
 import {
   aplicarFiltrosConfirmacao,
-  consultaPassou,
   countActiveFilters,
   FILTROS_LISTA_CONSULTA_VAZIOS,
   type FiltrosListaConsulta,
@@ -48,11 +45,7 @@ export function ConfirmarConsultasScreen() {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
 
   const baseLista = useConsultasParaConfirmar();
-  const {
-    confirmarConsulta,
-    cancelarPorNaoComparecimento,
-    recarregarConsultas,
-  } = useContextoConsulta();
+  const { confirmarConsulta, recarregarConsultas } = useContextoConsulta();
 
   const [filtros, setFiltros] = useState<FiltrosListaConsulta>(
     FILTROS_LISTA_CONSULTA_VAZIOS,
@@ -60,10 +53,6 @@ export function ConfirmarConsultasScreen() {
   const [modalFiltros, setModalFiltros] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
-  const [naoCompId, setNaoCompId] = useState<string | null>(null);
-  const [modalNaoComp, setModalNaoComp] = useState<{
-    numero: string;
-  } | null>(null);
 
   const lista = useMemo(
     () =>
@@ -104,26 +93,6 @@ export function ConfirmarConsultasScreen() {
       toast.exibir({ variante: "erro", titulo: "Erro", descricao: msg });
     } finally {
       setConfirmandoId(null);
-    }
-  }
-
-  async function executarNaoCompareceu(numero: string) {
-    setModalNaoComp(null);
-    setNaoCompId(numero);
-    try {
-      await cancelarPorNaoComparecimento(numero);
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      toast.exibir({
-        variante: "sucesso",
-        titulo: "Não comparecimento",
-        descricao: "Consulta atualizada.",
-      });
-    } catch (e) {
-      const msg =
-        e instanceof Error ? e.message : "Não foi possível atualizar.";
-      toast.exibir({ variante: "erro", titulo: "Erro", descricao: msg });
-    } finally {
-      setNaoCompId(null);
     }
   }
 
@@ -208,79 +177,14 @@ export function ConfirmarConsultasScreen() {
             descricao="Não há consultas marcadas pendentes de confirmação para hoje."
           />
         }
-        renderItem={({ item }) => {
-          const passou = consultaPassou(item, new Date());
-          return (
-            <ConsultaConfirmavelItem
-              consulta={item}
-              aoConfirmar={() => aoConfirmar(item.numero)}
-              mostrarNaoCompareceu={passou}
-              aoNaoCompareceu={
-                passou
-                  ? () => setModalNaoComp({ numero: item.numero })
-                  : undefined
-              }
-              carregandoConfirmar={confirmandoId === item.numero}
-              carregandoNaoCompareceu={naoCompId === item.numero}
-            />
-          );
-        }}
+        renderItem={({ item }) => (
+          <ConsultaConfirmavelItem
+            consulta={item}
+            aoConfirmar={() => aoConfirmar(item.numero)}
+            carregandoConfirmar={confirmandoId === item.numero}
+          />
+        )}
       />
-
-      <Modal
-        visible={!!modalNaoComp}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setModalNaoComp(null)}
-      >
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.45)",
-            justifyContent: "center",
-            padding: tema.espacamento.lg,
-          }}
-          onPress={() => setModalNaoComp(null)}
-        >
-          <Pressable
-            onPress={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: tema.cores.fundo.superficie,
-              borderRadius: tema.raios.lg,
-              padding: tema.espacamento.lg,
-              gap: tema.espacamento.md,
-            }}
-          >
-            <Texto variante="h3" peso="negrito">
-              Marcar não comparecimento?
-            </Texto>
-            <Texto variante="corpo" cor="texto.secundario">
-              A consulta será registrada como cancelada por não comparecimento.
-            </Texto>
-            <View style={{ flexDirection: "row", gap: tema.espacamento.sm }}>
-              <View style={{ flex: 1 }}>
-                <Botao
-                  rotulo="Voltar"
-                  variante="secundario"
-                  larguraTotal
-                  onPress={() => setModalNaoComp(null)}
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Botao
-                  rotulo="Confirmar"
-                  variante="perigo"
-                  larguraTotal
-                  onPress={() =>
-                    modalNaoComp &&
-                    executarNaoCompareceu(modalNaoComp.numero)
-                  }
-                />
-              </View>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
     </View>
   );
 }

@@ -176,4 +176,31 @@ export const servicoConsulta: ServicoConsulta = {
       situacao: STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
     };
   },
+
+  // Compensação do auto-cancelamento por não comparecimento. Não é uma
+  // transição da state machine — é um undo da ação do temporizador, válido
+  // só enquanto a consulta ainda está no estado cancelado por ele.
+  async desfazerNaoComparecimento(idConsulta) {
+    await delay();
+
+    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
+    if (index === -1) {
+      throw new Error(`Consulta '${idConsulta}' inexistente.`);
+    }
+
+    if (
+      consultasMock[index].situacao !==
+      STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO
+    ) {
+      throw new Error(
+        "Só é possível desfazer enquanto a consulta estiver cancelada por não comparecimento.",
+      );
+    }
+
+    consultasMock[index] = {
+      ...consultasMock[index],
+      motivoCancelamento: undefined,
+      situacao: STATUS_CONSULTA.MARCADA,
+    };
+  },
 };

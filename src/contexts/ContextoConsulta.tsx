@@ -52,7 +52,8 @@ type AcaoConsulta =
       type: "CANCELAR_MEDICO";
       payload: { numero: string; dados: CancelarConsultaDTO };
     }
-  | { type: "CANCELAR_NAO_COMPARECIMENTO"; payload: { numero: string } };
+  | { type: "CANCELAR_NAO_COMPARECIMENTO"; payload: { numero: string } }
+  | { type: "DESFAZER_NAO_COMPARECIMENTO"; payload: { numero: string } };
 
 export interface ValorContextoConsulta {
   state: EstadoConsulta;
@@ -72,6 +73,7 @@ export interface ValorContextoConsulta {
     dto: CancelarConsultaDTO,
   ) => Promise<void>;
   cancelarPorNaoComparecimento: (numero: string) => Promise<void>;
+  desfazerNaoComparecimento: (numero: string) => Promise<void>;
   recarregarConsultas: () => Promise<void>;
 }
 
@@ -171,6 +173,20 @@ function reducerConsulta(
         ),
       };
 
+    case "DESFAZER_NAO_COMPARECIMENTO":
+      return {
+        ...estado,
+        items: estado.items.map((c) =>
+          c.numero === acao.payload.numero
+            ? {
+                ...c,
+                motivoCancelamento: undefined,
+                situacao: STATUS_CONSULTA.MARCADA,
+              }
+            : c,
+        ),
+      };
+
     default: {
       const exausto: never = acao;
       return exausto;
@@ -257,6 +273,11 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
     dispatch({ type: "CANCELAR_NAO_COMPARECIMENTO", payload: { numero } });
   }, []);
 
+  const desfazerNaoComparecimento = useCallback(async (numero: string) => {
+    await servicoConsulta.desfazerNaoComparecimento(numero);
+    dispatch({ type: "DESFAZER_NAO_COMPARECIMENTO", payload: { numero } });
+  }, []);
+
   const recarregarConsultas = useCallback(async () => {
     dispatch({ type: "CARREGAMENTO_INICIAR" });
     try {
@@ -278,6 +299,7 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
       cancelarConsultaPeloCliente,
       cancelarConsultaPeloMedico,
       cancelarPorNaoComparecimento,
+      desfazerNaoComparecimento,
       recarregarConsultas,
     }),
     [
@@ -289,6 +311,7 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
       cancelarConsultaPeloCliente,
       cancelarConsultaPeloMedico,
       cancelarPorNaoComparecimento,
+      desfazerNaoComparecimento,
       recarregarConsultas,
     ],
   );
