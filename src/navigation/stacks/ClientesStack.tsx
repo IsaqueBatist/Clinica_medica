@@ -17,14 +17,14 @@ export function ClientesStack() {
       screenOptions={{ header: (props) => <AppHeader {...props} /> }}
     >
       <Stack.Screen
-        name={Routes.ListarClientes}
-        component={TelaListarClientes}
-        options={{ title: "Clientes" }}
-      />
-      <Stack.Screen
         name={Routes.CadastroCliente}
         component={TelaFormularioClientes}
         options={{ title: "Cadastrar cliente" }}
+      />
+      <Stack.Screen
+        name={Routes.ListarClientes}
+        component={TelaListarClientes}
+        options={{ title: "Clientes" }}
       />
       <Stack.Screen
         name={Routes.DetalheCliente}

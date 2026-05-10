@@ -9,6 +9,7 @@ import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ConsultasStackParamList } from "../types";
 import { TelaListarConsultas } from "../../screens/consulta/TelaListarConsultas";
+import { TelaRealizarConsulta } from "../../screens/consulta/TelaRealizarConsulta";
 
 const Stack = createNativeStackNavigator<ConsultasStackParamList>();
 
@@ -18,14 +19,14 @@ export function ConsultasStack() {
       screenOptions={{ header: (props) => <AppHeader {...props} /> }}
     >
       <Stack.Screen
-        name={Routes.ListarConsultas}
-        component={TelaListarConsultas}
-        options={{ title: "Consultas" }}
-      />
-      <Stack.Screen
         name={Routes.ConsultaMarcacao}
         component={TelaConsultaMarcacao}
         options={{ title: "Marcar consulta", headerShown: false }}
+      />
+      <Stack.Screen
+        name={Routes.ListarConsultas}
+        component={TelaListarConsultas}
+        options={{ title: "Consultas" }}
       />
       <Stack.Screen
         name={Routes.ConsultaConfirmacao}
@@ -34,7 +35,7 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.ConsultaRealizacao}
-        component={TelaPlaceholder}
+        component={TelaRealizarConsulta}
         options={{ title: "Realizar consulta" }}
       />
       <Stack.Screen
