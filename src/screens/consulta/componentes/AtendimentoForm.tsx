@@ -16,6 +16,7 @@ interface PropsAtendimentoForm {
   aoAlterar: (campo: keyof DadosAtendimento, valor: string) => void;
   aoFinalizar: () => void;
   aoVoltar: () => void;
+  aoCancelar: (motivo: "medico" | "falta") => void; // Nova prop
   salvando: boolean;
 }
 
@@ -107,6 +108,7 @@ export function AtendimentoForm({
   aoAlterar,
   aoFinalizar,
   aoVoltar,
+  aoCancelar,
   salvando,
 }: PropsAtendimentoForm) {
   const { tema } = useTema();
@@ -120,7 +122,7 @@ export function AtendimentoForm({
         aoAlterar={(v: string) => aoAlterar("laudo", v)}
         desabilitado={salvando}
         acessibilidade="Campo de laudo"
-        obrigatorio={true} // Marca como obrigatório
+        obrigatorio={true}
       />
 
       <CampoTexto
@@ -144,13 +146,40 @@ export function AtendimentoForm({
       />
 
       {/* Ações */}
-      <View style={{ flexDirection: "row", gap: tema.espacamento.sm, marginTop: 4 }}>
+      {/* ─── Ações Principais (Fluxo Feliz) ─── */}
+      <View style={{ gap: tema.espacamento.md, marginTop: tema.espacamento.sm }}>
+        <TouchableOpacity
+          onPress={aoFinalizar}
+          disabled={salvando}
+          activeOpacity={0.85}
+          style={{
+            width: "100%",
+            paddingVertical: 16, // Área de toque maior
+            borderRadius: tema.raios.md,
+            backgroundColor: salvando ? tema.cores.borda.padrao : tema.cores.marca.primario,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: tema.espacamento.xs,
+            elevation: 2, // Leve sombra para destacar o botão primário no Android
+            shadowColor: "#000", // Sombra no iOS
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+          }}
+        >
+          {salvando && <ActivityIndicator size="small" color="#ffffff" />}
+          <Texto variante="corpo" peso="negrito" style={{ color: "#ffffff", fontSize: 16 }}>
+            {salvando ? "Finalizando..." : "Finalizar Consulta"}
+          </Texto>
+        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={aoVoltar}
           disabled={salvando}
           activeOpacity={0.7}
           style={{
-            flex: 1,
+            width: "100%",
             paddingVertical: 14,
             borderRadius: tema.raios.md,
             borderWidth: 1.5,
@@ -160,30 +189,60 @@ export function AtendimentoForm({
           }}
         >
           <Texto variante="corpo" peso="medio" style={{ color: tema.cores.texto.secundario }}>
-            ← Voltar
+            Voltar para a lista
           </Texto>
         </TouchableOpacity>
+      </View>
 
-        <TouchableOpacity
-          onPress={aoFinalizar}
-          disabled={salvando}
-          activeOpacity={0.85}
-          style={{
-            flex: 2,
-            paddingVertical: 14,
-            borderRadius: tema.raios.md,
-            backgroundColor: salvando ? tema.cores.borda.padrao : tema.cores.marca.primario,
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: tema.espacamento.xs,
-          }}
-        >
-          {salvando && <ActivityIndicator size="small" color="#ffffff" />}
-          <Texto variante="corpo" peso="negrito" style={{ color: "#ffffff" }}>
-            {salvando ? "Finalizando..." : "Finalizar consulta"}
-          </Texto>
-        </TouchableOpacity>
+      {/* ─── Ações Destrutivas (Exceções) ─── */}
+      <View style={{
+        marginTop: tema.espacamento.xl,
+        paddingTop: tema.espacamento.md,
+        borderTopWidth: 1,
+        borderColor: tema.cores.borda.padrao,
+        gap: tema.espacamento.md
+      }}>
+        <View style={{ flexDirection: 'row', gap: tema.espacamento.sm }}>
+          <TouchableOpacity
+            onPress={() => aoCancelar("falta")}
+            disabled={salvando}
+            activeOpacity={0.7}
+            style={{
+              flex: 1,
+              paddingVertical: 12,
+              borderRadius: tema.raios.md,
+              backgroundColor: tema.cores.fundo.primario, // Fundo sólido para quebrar a linha
+              borderWidth: 1,
+              borderColor: tema.cores.status.erro,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Texto variante="legenda" peso="negrito" style={{ color: tema.cores.status.erro, textAlign: 'center' }}>
+              Falta do Paciente
+            </Texto>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => aoCancelar("medico")}
+            disabled={salvando}
+            activeOpacity={0.7}
+            style={{
+              flex: 1,
+              paddingVertical: 12,
+              borderRadius: tema.raios.md,
+              backgroundColor: tema.cores.fundo.primario,
+              borderWidth: 1,
+              borderColor: tema.cores.texto.suave,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Texto variante="legenda" peso="negrito" cor="texto.suave" style={{ textAlign: 'center' }}>
+              Cancelar
+            </Texto>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

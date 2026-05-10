@@ -10,7 +10,6 @@ import { useToast } from "../../hooks/useToast";
 // Importando as constantes atualizadas (ajuste o caminho se necessário)
 import {
   STATUS_CONSULTA,
-  TIPO_CONSULTA,
   TIPO_CONSULTA_LABEL
 } from "../../constants/consulta";
 import type { Consulta } from "../../types/models/consulta.type";
@@ -44,7 +43,12 @@ type Etapa =
 
 export function TelaRealizarConsulta() {
   const { tema } = useTema();
-  const { state, realizarConsulta } = useContextoConsulta();
+  const {
+    state,
+    realizarConsulta,
+    cancelarConsultaPeloMedico,
+    cancelarPorNaoComparecimento
+  } = useContextoConsulta();
   const { exibir } = useToast();
   const { width } = useWindowDimensions();
 
@@ -139,6 +143,40 @@ export function TelaRealizarConsulta() {
     setEtapa({ tipo: "lista" });
   }, []);
 
+  const cancelarAtendimento = useCallback(async (motivo: "medico" | "falta") => {
+    if (etapa.tipo !== "atendimento") return;
+
+    setSalvando(true);
+    try {
+      if (motivo === "falta") {
+        // Usa o método específico de não comparecimento do seu Contexto
+        await cancelarPorNaoComparecimento(etapa.consulta.numero);
+      } else {
+        // Usa o método de cancelamento pelo médico passando o DTO esperado
+        await cancelarConsultaPeloMedico(etapa.consulta.numero, {
+          motivoCancelamento: "Cancelado pelo médico no momento do atendimento." // Ajuste a string conforme a necessidade do seu DTO
+        });
+      }
+
+      exibir({
+        variante: "aviso", // "aviso" ou "sucesso" dependendo do seu design
+        titulo: "Consulta Cancelada",
+        descricao: motivo === "falta"
+          ? "Falta do paciente registada com sucesso."
+          : "A consulta foi cancelada pelo médico.",
+      });
+      setEtapa({ tipo: "lista" });
+    } catch (e) {
+      exibir({
+        variante: "erro",
+        titulo: "Erro ao cancelar",
+        descricao: e instanceof Error ? e.message : "Não foi possível cancelar a consulta.",
+      });
+    } finally {
+      setSalvando(false);
+    }
+  }, [etapa, cancelarPorNaoComparecimento, cancelarConsultaPeloMedico, exibir]);
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
@@ -198,12 +236,12 @@ export function TelaRealizarConsulta() {
 
           {/* Formulario OBRIGATORIAMENTE ACIMA */}
           <AtendimentoForm
-            valores={dadosForm}
-            aoAlterar={alterarCampo}
-            aoFinalizar={finalizar}
-            aoVoltar={voltar}
-            salvando={salvando}
-          />
+              valores={dadosForm}
+              aoAlterar={alterarCampo}
+              aoFinalizar={finalizar}
+              aoVoltar={voltar}
+              salvando={salvando} 
+              aoCancelar={cancelarAtendimento}/>
 
           {/* Linha Divisória */}
           <View style={{ height: 1, backgroundColor: tema.cores.borda.padrao, marginVertical: tema.espacamento.sm }} />
