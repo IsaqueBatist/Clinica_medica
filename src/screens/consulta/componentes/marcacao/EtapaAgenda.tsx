@@ -1,5 +1,15 @@
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import {
+  startOfMonth,
+  endOfMonth,
+  format,
+  parseISO,
+  setHours,
+  setMinutes,
+  isBefore,
+  startOfDay,
+} from "date-fns";
 
 import { useContextoConsulta } from "../../../../hooks";
 import { Texto } from "../../../../components/ui/Texto";
@@ -7,15 +17,17 @@ import { useTema } from "../../../../hooks/useTema";
 import {
   STATUS_AGENDA,
   STATUS_AGENDA_LABEL,
-  type StatusAgenda,
+  StatusAgenda,
 } from "../../../../constants/agenda";
-import { STATUS_CONSULTA } from "../../../../constants/consulta";
 import { STATUS_AGENDA_ROLE } from "../../../../theme/statusColor";
-import type { Consulta } from "../../../../types/models/consulta.type";
-import type { DiasAtendimento } from "../../../../types/models/diasAtendimento.type";
+import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
+
+// Reaproveitamos a função pura e os tipos que criamos!
+import { gerarSlots } from "../../../../utils/agenda";
 import type { Medico } from "../../../../types/models/medico.type";
 import type { PaletaCores } from "../../../../types/paletaCores.type";
-import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
+import { SlotItem } from "../../../../components/agenda/SlotItem";
+import { Slot } from "../../../../types/models/agenda";
 
 interface Props {
   state: EstadoMarcacao;
@@ -23,155 +35,117 @@ interface Props {
 }
 
 const NOMES_MES = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 
 const NOMES_DIA_SEMANA = ["D", "S", "T", "Q", "Q", "S", "S"];
+const NOMES_DIA_SEMANA_LONGOS = [
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+];
 
 const SELECIONAVEIS: readonly StatusAgenda[] = [
   STATUS_AGENDA.LIVRE,
   STATUS_AGENDA.CANCELADO_PELO_CLIENTE,
 ];
 
-function pad(n: number): string {
-  return n < 10 ? `0${n}` : String(n);
-}
-
-function formatarHora(d: Date): string {
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function inicioDoDia(d: Date): Date {
-  const novo = new Date(d);
-  novo.setHours(0, 0, 0, 0);
-  return novo;
-}
-
-function mesmoDia(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-// Mapeia consulta existente em status visual da agenda. Se não há consulta no
-// slot, é L (Livre).
-function statusDoSlotConsulta(consulta: Consulta | undefined): StatusAgenda {
-  if (!consulta) return STATUS_AGENDA.LIVRE;
-  switch (consulta.situacao) {
-    case STATUS_CONSULTA.MARCADA:
-    case STATUS_CONSULTA.CONFIRMADA:
-    case STATUS_CONSULTA.REALIZADA:
-    case STATUS_CONSULTA.ENCERRADA:
-      return STATUS_AGENDA.MARCADO;
-    case STATUS_CONSULTA.CANCELADA_PELO_CLIENTE:
-    case STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO:
-      return STATUS_AGENDA.CANCELADO_PELO_CLIENTE;
-    case STATUS_CONSULTA.CANCELADA_PELO_MEDICO:
-      return STATUS_AGENDA.CANCELADO_PELO_MEDICO;
-    default:
-      return STATUS_AGENDA.LIVRE;
-  }
-}
-
-function gerarSlotsDoDia(
-  dia: Date,
-  atends: DiasAtendimento[],
-  agora: Date,
-): Date[] {
-  const slots: Date[] = [];
-  for (const atend of atends) {
-    const [hi, mi] = atend.horaInicio.split(":").map(Number);
-    const [hf, mf] = atend.horaFim.split(":").map(Number);
-    const inicio = new Date(dia);
-    inicio.setHours(hi, mi, 0, 0);
-    const fim = new Date(dia);
-    fim.setHours(hf, mf, 0, 0);
-    const passoMs = atend.tempoEstimado * 60_000;
-    for (let t = inicio.getTime(); t < fim.getTime(); t += passoMs) {
-      if (t > agora.getTime()) slots.push(new Date(t));
-    }
-  }
-  return slots.sort((a, b) => a.getTime() - b.getTime());
-}
-
-interface SlotComStatus {
-  dataHora: Date;
-  status: StatusAgenda;
-}
-
-function montarSlotsDoDia(
-  dia: Date,
-  medico: Medico,
-  consultas: Consulta[],
-  agora: Date,
-): SlotComStatus[] {
-  const dias = medico.diasAtendimento ?? [];
-  const atendsDoDia = dias.filter((d) => d.diaSemana === dia.getDay());
-  if (atendsDoDia.length === 0) return [];
-
-  const consultasDoMedico = consultas.filter(
-    (c) => c.medico.matricula === medico.matricula,
-  );
-
-  return gerarSlotsDoDia(dia, atendsDoDia, agora).map((dataHora) => {
-    const consulta = consultasDoMedico.find(
-      (c) =>
-        mesmoDia(c.dataHora, dataHora) &&
-        c.dataHora.getHours() === dataHora.getHours() &&
-        c.dataHora.getMinutes() === dataHora.getMinutes(),
-    );
-    return { dataHora, status: statusDoSlotConsulta(consulta) };
-  });
-}
-
 type SituacaoDia = "passado" | "sem_atendimento" | "lotado" | "disponivel";
-
-function situacaoDoDia(
-  dia: Date,
-  medico: Medico,
-  consultas: Consulta[],
-  agora: Date,
-): SituacaoDia {
-  if (inicioDoDia(dia).getTime() < inicioDoDia(agora).getTime()) {
-    return "passado";
-  }
-  const slots = montarSlotsDoDia(dia, medico, consultas, agora);
-  if (slots.length === 0) return "sem_atendimento";
-  const algumLivre = slots.some((s) => SELECIONAVEIS.includes(s.status));
-  return algumLivre ? "disponivel" : "lotado";
-}
-
-function corStatus(status: StatusAgenda, cores: PaletaCores) {
-  return cores.status[STATUS_AGENDA_ROLE[status]];
-}
 
 export function EtapaAgenda({ state, dispatch }: Props) {
   const { tema } = useTema();
   const { state: consultasState } = useContextoConsulta();
-
   const medico = state.medico;
+
   const agora = useMemo(() => new Date(), []);
 
+  // Controla o mês que aparece no calendário
   const [mesVisivel, setMesVisivel] = useState(
     () => new Date(agora.getFullYear(), agora.getMonth(), 1),
   );
+
+  // Controla qual dia foi clicado
   const [diaSelecionado, setDiaSelecionado] = useState<Date | undefined>(
-    state.dataHora ? inicioDoDia(state.dataHora) : undefined,
+    state.dataHora ? startOfDay(state.dataHora) : undefined,
   );
 
-  const slotsDoDia = useMemo(() => {
-    if (!medico || !diaSelecionado) return [];
-    return montarSlotsDoDia(
-      diaSelecionado,
-      medico,
-      consultasState.items,
-      agora,
-    );
-  }, [medico, diaSelecionado, consultasState.items, agora]);
+  // Reconstroi o estado do slot selecionado para a UI
+  const slotSelecionadoAtual = useMemo<Slot | null>(() => {
+    if (!state.dataHora) return null;
+    return {
+      data: format(state.dataHora, "yyyy-MM-dd"),
+      horario: format(state.dataHora, "HH:mm"),
+      status: STATUS_AGENDA.LIVRE, // Irrelevante para comparação visual
+    };
+  }, [state.dataHora]);
 
+  // =======================================================================
+  // MOTOR DE DADOS: Calcula os slots de todo o mês visível de forma O(1)
+  // =======================================================================
+  const slotsDoMesVisivel = useMemo(() => {
+    if (!medico) return [];
+    const inicio = startOfMonth(mesVisivel);
+    const fim = endOfMonth(mesVisivel);
+
+    // Chama a nossa função pura que está no utils/agenda.ts
+    return gerarSlots(medico, inicio, fim, consultasState.items, agora);
+  }, [medico, mesVisivel, consultasState.items, agora]);
+
+  // Agrupa os slots por dia para facilitar o Calendário e a Lista
+  const { mapaStatusDias, slotsPorDia } = useMemo(() => {
+    const statusMap = new Map<string, SituacaoDia>();
+    const slotsMap = new Map<string, Slot[]>();
+
+    for (const slot of slotsDoMesVisivel) {
+      // Agrupa os slots do dia
+      if (!slotsMap.has(slot.data)) slotsMap.set(slot.data, []);
+      slotsMap.get(slot.data)!.push(slot);
+
+      // Define se o dia está lotado ou disponível
+      const currentStatus = statusMap.get(slot.data);
+      if (currentStatus === "disponivel") continue; // Já achou um horário livre
+
+      if (SELECIONAVEIS.includes(slot.status)) {
+        statusMap.set(slot.data, "disponivel");
+      } else {
+        statusMap.set(slot.data, "lotado");
+      }
+    }
+    return { mapaStatusDias: statusMap, slotsPorDia: slotsMap };
+  }, [slotsDoMesVisivel]);
+
+  const slotsDoDiaSelecionado = useMemo(() => {
+    if (!diaSelecionado) return [];
+    const dataStr = format(diaSelecionado, "yyyy-MM-dd");
+    return slotsPorDia.get(dataStr) || [];
+  }, [diaSelecionado, slotsPorDia]);
+
+  // Função helper para colorir o calendário
+  function getSituacaoDoDia(dia: Date): SituacaoDia {
+    if (isBefore(startOfDay(dia), startOfDay(agora))) return "passado";
+    const dataStr = format(dia, "yyyy-MM-dd");
+    if (!mapaStatusDias.has(dataStr)) return "sem_atendimento";
+    return mapaStatusDias.get(dataStr)!;
+  }
+
+  // =======================================================================
+  // HANDLERS
+  // =======================================================================
   if (!medico) {
     return (
       <View style={{ flex: 1, padding: tema.espacamento.lg }}>
@@ -182,6 +156,14 @@ export function EtapaAgenda({ state, dispatch }: Props) {
 
   function irMes(delta: number) {
     setMesVisivel((m) => new Date(m.getFullYear(), m.getMonth() + delta, 1));
+  }
+
+  function handleSlotSelect(slot: Slot) {
+    const dataBase = parseISO(slot.data);
+    const [horas, minutos] = slot.horario.split(":").map(Number);
+    const dataHoraFinal = setMinutes(setHours(dataBase, horas), minutos);
+
+    dispatch({ type: "SET_SLOT", payload: dataHoraFinal });
   }
 
   return (
@@ -200,27 +182,31 @@ export function EtapaAgenda({ state, dispatch }: Props) {
         </Texto>
       </View>
 
+      {/* COMPONENTE CALENDÁRIO */}
       <Calendario
         mesVisivel={mesVisivel}
-        medico={medico}
-        consultas={consultasState.items}
-        agora={agora}
         diaSelecionado={diaSelecionado}
         aoSelecionarDia={setDiaSelecionado}
         aoIrMes={irMes}
+        getSituacaoDoDia={getSituacaoDoDia}
       />
 
       <Legenda />
 
+      {/* COMPONENTE LISTA DE SLOTS DO DIA */}
       {diaSelecionado ? (
         <ListaSlots
           dia={diaSelecionado}
-          slots={slotsDoDia}
-          slotSelecionado={state.dataHora}
-          aoSelecionar={(d) => dispatch({ type: "SET_SLOT", payload: d })}
+          slots={slotsDoDiaSelecionado}
+          slotSelecionado={slotSelecionadoAtual}
+          aoSelecionar={handleSlotSelect}
         />
       ) : (
-        <Texto cor="texto.secundario" alinhamento="center">
+        <Texto
+          cor="texto.secundario"
+          alinhamento="center"
+          style={{ marginTop: 16 }}
+        >
           Toque em um dia disponível para ver os horários.
         </Texto>
       )}
@@ -228,26 +214,24 @@ export function EtapaAgenda({ state, dispatch }: Props) {
   );
 }
 
-// --- Calendário -------------------------------------------------------------
+// ============================================================================
+// COMPONENTES DE UI INTERNOS (MANTIDOS PUROS E BURROS)
+// ============================================================================
 
 interface PropsCalendario {
   mesVisivel: Date;
-  medico: Medico;
-  consultas: Consulta[];
-  agora: Date;
   diaSelecionado?: Date;
   aoSelecionarDia: (d: Date) => void;
   aoIrMes: (delta: number) => void;
+  getSituacaoDoDia: (dia: Date) => SituacaoDia;
 }
 
 function Calendario({
   mesVisivel,
-  medico,
-  consultas,
-  agora,
   diaSelecionado,
   aoSelecionarDia,
   aoIrMes,
+  getSituacaoDoDia,
 }: PropsCalendario) {
   const { tema } = useTema();
 
@@ -256,7 +240,6 @@ function Calendario({
   const ultimoDia = new Date(ano, mes + 1, 0).getDate();
   const offsetInicial = new Date(ano, mes, 1).getDay();
 
-  // Células: vazias antes do dia 1 + dias do mês.
   const celulas: (Date | null)[] = [
     ...Array.from({ length: offsetInicial }, () => null),
     ...Array.from({ length: ultimoDia }, (_, i) => new Date(ano, mes, i + 1)),
@@ -302,8 +285,12 @@ function Calendario({
             {dia ? (
               <CelulaDia
                 dia={dia}
-                situacao={situacaoDoDia(dia, medico, consultas, agora)}
-                selecionado={!!diaSelecionado && mesmoDia(dia, diaSelecionado)}
+                situacao={getSituacaoDoDia(dia)}
+                selecionado={
+                  !!diaSelecionado &&
+                  format(dia, "yyyy-MM-dd") ===
+                    format(diaSelecionado, "yyyy-MM-dd")
+                }
                 aoSelecionar={aoSelecionarDia}
               />
             ) : (
@@ -316,19 +303,17 @@ function Calendario({
   );
 }
 
-interface PropsSetaMes {
+function SetaMes({
+  direcao,
+  onPress,
+}: {
   direcao: "anterior" | "proximo";
   onPress: () => void;
-}
-
-function SetaMes({ direcao, onPress }: PropsSetaMes) {
+}) {
   const { tema } = useTema();
-  const rotulo = direcao === "anterior" ? "‹" : "›";
-  const acessivel = direcao === "anterior" ? "Mês anterior" : "Próximo mês";
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={acessivel}
       onPress={onPress}
       style={{
         width: 32,
@@ -340,17 +325,10 @@ function SetaMes({ direcao, onPress }: PropsSetaMes) {
       }}
     >
       <Texto variante="corpo" peso="negrito">
-        {rotulo}
+        {direcao === "anterior" ? "‹" : "›"}
       </Texto>
     </Pressable>
   );
-}
-
-interface PropsCelulaDia {
-  dia: Date;
-  situacao: SituacaoDia;
-  selecionado: boolean;
-  aoSelecionar: (d: Date) => void;
 }
 
 function CelulaDia({
@@ -358,16 +336,19 @@ function CelulaDia({
   situacao,
   selecionado,
   aoSelecionar,
-}: PropsCelulaDia) {
+}: {
+  dia: Date;
+  situacao: SituacaoDia;
+  selecionado: boolean;
+  aoSelecionar: (d: Date) => void;
+}) {
   const { tema } = useTema();
   const desabilitado = situacao !== "disponivel";
-
   const fundo = selecionado
     ? tema.cores.marca.primario
     : situacao === "disponivel"
       ? tema.cores.fundo.suave
       : "transparent";
-
   const corTexto = selecionado
     ? "texto.sobreMarca"
     : desabilitado
@@ -398,27 +379,26 @@ function CelulaDia({
   );
 }
 
-// --- Lista de slots ---------------------------------------------------------
-
-interface PropsListaSlots {
-  dia: Date;
-  slots: SlotComStatus[];
-  slotSelecionado?: Date;
-  aoSelecionar: (d: Date) => void;
-}
-
 function ListaSlots({
   dia,
   slots,
   slotSelecionado,
   aoSelecionar,
-}: PropsListaSlots) {
+}: {
+  dia: Date;
+  slots: Slot[];
+  slotSelecionado: Slot | null;
+  aoSelecionar: (s: Slot) => void;
+}) {
   const { tema } = useTema();
 
   if (slots.length === 0) {
     return (
       <View>
-        <TituloDia dia={dia} />
+        <Texto variante="corpo" peso="negrito">
+          {NOMES_DIA_SEMANA_LONGOS[dia.getDay()]}, {dia.getDate()} de{" "}
+          {NOMES_MES[dia.getMonth()]}
+        </Texto>
         <Texto
           cor="texto.secundario"
           style={{ marginTop: tema.espacamento.sm }}
@@ -431,94 +411,38 @@ function ListaSlots({
 
   return (
     <View style={{ gap: tema.espacamento.sm }}>
-      <TituloDia dia={dia} />
+      <Texto
+        variante="corpo"
+        peso="negrito"
+        style={{ marginBottom: tema.espacamento.xs }}
+      >
+        Horários: {NOMES_DIA_SEMANA_LONGOS[dia.getDay()]}, {dia.getDate()} de{" "}
+        {NOMES_MES[dia.getMonth()]}
+      </Texto>
+      {/* Aqui reutilizamos o seu componente SlotItem! */}
       {slots.map((slot) => (
-        <CelulaSlot
-          key={slot.dataHora.getTime()}
+        <SlotItem
+          key={`${slot.data}-${slot.horario}`}
           slot={slot}
           selecionado={
             !!slotSelecionado &&
-            slotSelecionado.getTime() === slot.dataHora.getTime()
+            slotSelecionado.data === slot.data &&
+            slotSelecionado.horario === slot.horario
           }
-          aoSelecionar={aoSelecionar}
+          onPress={aoSelecionar}
         />
       ))}
     </View>
   );
 }
 
-function TituloDia({ dia }: { dia: Date }) {
-  return (
-    <Texto variante="corpo" peso="negrito">
-      Agenda: {NOMES_DIA_SEMANA_LONGOS[dia.getDay()]}, {dia.getDate()} de{" "}
-      {NOMES_MES[dia.getMonth()]} de {dia.getFullYear()}
-    </Texto>
-  );
-}
-
-const NOMES_DIA_SEMANA_LONGOS = [
-  "Domingo",
-  "Segunda-feira",
-  "Terça-feira",
-  "Quarta-feira",
-  "Quinta-feira",
-  "Sexta-feira",
-  "Sábado",
-];
-
-interface PropsCelulaSlot {
-  slot: SlotComStatus;
-  selecionado: boolean;
-  aoSelecionar: (d: Date) => void;
-}
-
-function CelulaSlot({ slot, selecionado, aoSelecionar }: PropsCelulaSlot) {
-  const { tema } = useTema();
-  const selecionavel = SELECIONAVEIS.includes(slot.status);
-  const cor = corStatus(slot.status, tema.cores);
-
-  return (
-    <Pressable
-      disabled={!selecionavel}
-      onPress={() => aoSelecionar(slot.dataHora)}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: tema.espacamento.md,
-        paddingVertical: tema.espacamento.xs,
-      }}
-    >
-      <View style={{ width: 56 }}>
-        <Texto variante="legenda" peso="medio" cor="texto.secundario">
-          {formatarHora(slot.dataHora)}
-        </Texto>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: cor,
-          borderRadius: tema.raios.md,
-          paddingVertical: tema.espacamento.sm,
-          paddingHorizontal: tema.espacamento.md,
-          borderWidth: selecionado ? 2 : 0,
-          borderColor: tema.cores.borda.foco,
-          opacity: selecionavel ? 1 : 0.55,
-          alignItems: "center",
-        }}
-      >
-        <Texto variante="legenda" peso="negrito" style={{ color: "#fff" }}>
-          {slot.status}
-        </Texto>
-      </View>
-    </Pressable>
-  );
-}
-
-// --- Legenda ----------------------------------------------------------------
-
 function Legenda() {
   const { tema } = useTema();
   const itens = Object.values(STATUS_AGENDA);
+
+  function corStatus(status: StatusAgenda, cores: PaletaCores) {
+    return cores.status[STATUS_AGENDA_ROLE[status]];
+  }
 
   return (
     <View

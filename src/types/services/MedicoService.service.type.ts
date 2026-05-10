@@ -1,6 +1,5 @@
 import { StatusPessoa } from "../../constants/pessoa";
 import { Medico } from "../models/medico.type";
-import { SlotAgenda } from "../models/slotAgenda.type";
 import { PaginatedResult } from "./services";
 
 interface FiltroMedico {
@@ -18,7 +17,6 @@ export interface ServicoMedico {
     page?: number,
     limit?: number,
   ): Promise<PaginatedResult<Medico>>;
-  buscarAgendaDia(dia: Date, identificacao: string): Promise<SlotAgenda[]>;
   pegarPorIdentificacao(identificacao: string): Promise<Medico>;
   cadastrar(data: CadastrarMedicoDTO): Promise<Medico>;
   editar(identificacao: string, data: EditarMedicoDTO): Promise<Medico>;

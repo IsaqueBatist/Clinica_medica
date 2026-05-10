@@ -4,6 +4,7 @@ import { Consulta } from "../types/models/consulta.type";
 import { ServicoConsulta } from "../types/services/ConsultaService.service.type";
 import { delay } from "../utils/delay";
 import { assertTransition } from "../utils/consultaStateMachine";
+import { validarRegrasEncerramento } from "../domain/consulta";
 
 const mesmoDia = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() &&
@@ -92,11 +93,8 @@ export const servicoConsulta: ServicoConsulta = {
   async encerrarConsulta(idConsulta, data) {
     await delay();
 
-    if (data.tipo === "retorno" && data.valor && data.valor > 0) {
-      throw new Error(
-        "Violação de regra de negócio: Cobrança em consulta de retorno.",
-      );
-    }
+    // Delegação para o agregado do domínio
+    validarRegrasEncerramento(data.tipo, data.valor);
 
     const index = consultasMock.findIndex((c) => c.numero === idConsulta);
     if (index === -1) {
@@ -144,6 +142,7 @@ export const servicoConsulta: ServicoConsulta = {
       situacao: STATUS_CONSULTA.CANCELADA_PELO_CLIENTE,
     };
   },
+
   async cancelarConsultaMedico(idConsulta, data) {
     await delay();
     const index = consultasMock.findIndex((c) => c.numero === idConsulta);
@@ -183,9 +182,6 @@ export const servicoConsulta: ServicoConsulta = {
     };
   },
 
-  // Compensação do auto-cancelamento por não comparecimento. Não é uma
-  // transição da state machine — é um undo da ação do temporizador, válido
-  // só enquanto a consulta ainda está no estado cancelado por ele.
   async desfazerNaoComparecimento(idConsulta) {
     await delay();
 
@@ -199,7 +195,7 @@ export const servicoConsulta: ServicoConsulta = {
       STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO
     ) {
       throw new Error(
-        "Só é possível desfazer enquanto a consulta estiver cancelada por não comparecimento.",
+        "Operação de compensação inválida: A consulta não se encontra no estado de cancelamento automático.",
       );
     }
 
