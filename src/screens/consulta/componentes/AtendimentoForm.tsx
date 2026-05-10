@@ -233,12 +233,12 @@ export function AtendimentoForm({
               borderRadius: tema.raios.md,
               backgroundColor: tema.cores.fundo.primario,
               borderWidth: 1,
-              borderColor: tema.cores.texto.suave,
+              borderColor: tema.cores.texto.secundario,
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            <Texto variante="legenda" peso="negrito" cor="texto.suave" style={{ textAlign: 'center' }}>
+            <Texto variante="legenda" peso="negrito" cor="texto.secundario" style={{ textAlign: 'center' }}>
               Cancelar
             </Texto>
           </TouchableOpacity>
