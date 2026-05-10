@@ -1,18 +1,30 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { View, FlatList, TextInput, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Importações do Design System
 import { useTema } from "../../hooks/useTema";
-import { Texto, BotaoIcone, Divisor, MarcaApp } from "../../components/ui";
-import { BarraInferior, SidebarDrawer } from "../../components/navegacao";
+import { Texto, Divisor } from "../../components/ui";
 import { ItemListaCliente } from "../../features/clientes/ItemListaCliente";
 import { useContextoCliente } from "../../hooks/useContextoCliente";
 import type { Cliente } from "../../types/models/cliente.type";
+import { useFab } from "../../contexts/ContextoFab";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function TelaListarClientes() {
-  const { tema, modo, alternar } = useTema();
+  const { tema } = useTema();
   const { state, criarCliente } = useContextoCliente();
+  const { show, hide } = useFab();
+
+  useFocusEffect(
+    useCallback(() => {
+      show();
+
+      return () => {
+        hide();
+      };
+    }, [show, hide])
+  );
 
   const [busca, setBusca] = useState("");
   const [refreshing, setRefreshing] = useState(false);

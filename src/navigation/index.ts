@@ -1,5 +1,4 @@
 export { AppNavigator } from "./AppNavigator";
-export type { PropsAppNavigator } from "./AppNavigator";
 
 export { DrawerNavigator } from "./DrawerNavigator";
 export type { PropsDrawerNavigator } from "./DrawerNavigator";

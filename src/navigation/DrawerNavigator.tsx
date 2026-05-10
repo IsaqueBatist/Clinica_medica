@@ -31,7 +31,7 @@ export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
   return (
     <Drawer.Navigator
       drawerContent={(props) => (
-        <CustomDrawerContent {...props} aoSair={aoSair} />
+        <CustomDrawerContent {...props} />
       )}
       screenOptions={{
         headerShown: false,
