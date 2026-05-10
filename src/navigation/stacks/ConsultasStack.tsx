@@ -8,6 +8,7 @@ import { CancelarConsultasScreen } from "../../screens/consulta/CancelarConsulta
 import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ConsultasStackParamList } from "../types";
+import { TelaListarConsultas } from "../../screens/consulta/TelaListarConsultas";
 
 const Stack = createNativeStackNavigator<ConsultasStackParamList>();
 
@@ -18,7 +19,7 @@ export function ConsultasStack() {
     >
       <Stack.Screen
         name={Routes.ListarConsultas}
-        component={TelaPlaceholder}
+        component={TelaListarConsultas}
         options={{ title: "Consultas" }}
       />
       <Stack.Screen

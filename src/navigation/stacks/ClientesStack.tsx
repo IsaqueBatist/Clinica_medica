@@ -7,6 +7,7 @@ import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ClientesStackParamList } from "../types";
 import { TelaFormularioClientes } from "../../screens/Cliente/TelaFormularioClientes";
+import { TelaDetalheCliente } from "../../screens/Cliente/TelaDetalheCliente";
 
 const Stack = createNativeStackNavigator<ClientesStackParamList>();
 
@@ -27,8 +28,8 @@ export function ClientesStack() {
       />
       <Stack.Screen
         name={Routes.DetalheCliente}
-        component={TelaPlaceholder}
-        options={{ title: "Detalhe" }}
+        component={TelaDetalheCliente}
+        options={{ title: "Detalhe do Cliente" }}
       />
     </Stack.Navigator>
   );

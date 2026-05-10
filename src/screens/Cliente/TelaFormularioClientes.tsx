@@ -1,18 +1,9 @@
 import React, { useContext, useEffect } from "react";
-
-import {
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from "react-native";
-
+import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { useForm, Controller } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 
 import {
   clienteCadastroSchema,
@@ -23,10 +14,9 @@ import {
 
 import { useTema } from "../../hooks/useTema";
 import { useToast } from "../../hooks/useToast";
-
 import { ContextoCliente } from "../../contexts/ContextoCliente";
 
-import { useNavigation } from "@react-navigation/native";
+import { ClientesStackParamList } from "../../navigation/types";
 
 import {
   Texto,
@@ -37,6 +27,7 @@ import {
   Icone,
   CampoFormulario,
 } from "../../components/ui";
+
 import {
   CadastrarClienteDTO,
   EditarClienteDTO,
@@ -69,55 +60,46 @@ const mascaraData = (valor: string) => {
 
 const converterData = (data?: string): Date | undefined => {
   if (!data) return undefined;
-
   const [dia, mes, ano] = data.split("/");
-
   if (!dia || !mes || !ano) {
     return undefined;
   }
-
   return new Date(Number(ano), Number(mes) - 1, Number(dia));
 };
 
-interface PropsTelaFormulario {
-  clienteId?: string;
-}
-
 type FormValues = ClienteCadastroFormValues | ClienteEdicaoFormValues;
 
-export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
+// Tipagem rigorosa para garantir a leitura do id
+type CadastroRouteProp = RouteProp<ClientesStackParamList, "CadastroCliente">;
+
+export function TelaFormularioClientes() {
   const { tema } = useTema();
-
   const toast = useToast();
-
   const navigation = useNavigation<any>();
+
+  // Extração estrita do ID via React Navigation
+  const route = useRoute<CadastroRouteProp>();
+  const idDaRota = route.params?.id;
 
   const clienteCtx = useContext(ContextoCliente);
 
-  const isEdicao = !!clienteId;
+  const isEdicao = !!idDaRota;
 
   const {
     control,
     handleSubmit,
     reset,
-
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(
       isEdicao ? clienteEdicaoSchema : clienteCadastroSchema,
     ),
-
     defaultValues: {
       nome: "",
-
       cpf: "",
-
       telefone: "",
-
       email: "",
-
       dataNascimento: "",
-
       endereco: {
         logradouro: "",
         numero: "",
@@ -126,7 +108,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
         cidade: "",
         estado: "",
       },
-
       convenio: {
         nome: "",
         matricula: "",
@@ -135,12 +116,12 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
   });
 
   useEffect(() => {
-    if (!isEdicao || !clienteId || !clienteCtx) {
+    if (!isEdicao || !idDaRota || !clienteCtx) {
       return;
     }
 
     const cliente = clienteCtx.state.items.find(
-      (c) => c.identificacao === clienteId,
+      (c) => c.identificacao === idDaRota,
     );
 
     if (!cliente) {
@@ -149,36 +130,25 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
 
     reset({
       nome: cliente.nome || "",
-
       telefone: cliente.telefones?.[0] || "",
-
       email: cliente.email || "",
-
       dataNascimento: cliente.dataNascimento
         ? new Date(cliente.dataNascimento).toLocaleDateString("pt-BR")
         : "",
-
       endereco: {
         logradouro: cliente.endereco?.logradouro || "",
-
         numero: cliente.endereco?.numero || "",
-
         complemento: cliente.endereco?.complemento || "",
-
         bairro: cliente.endereco?.bairro || "",
-
         cidade: cliente.endereco?.cidade || "",
-
         estado: cliente.endereco?.estado || "",
       },
-
       convenio: {
         nome: cliente.convenio?.nome || "",
-
         matricula: cliente.convenio?.matricula || "",
       },
     } as any);
-  }, [clienteCtx, clienteId, isEdicao, reset]);
+  }, [clienteCtx, idDaRota, isEdicao, reset]);
 
   const onSubmit = async (data: FormValues) => {
     if (!clienteCtx) {
@@ -189,9 +159,7 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
       if (!isEdicao) {
         const dto: CadastrarClienteDTO = {
           nome: data.nome,
-
           cpf: (data as ClienteCadastroFormValues).cpf.replace(/\D/g, ""),
-
           telefones: [data.telefone],
         };
 
@@ -199,12 +167,10 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
 
         toast.exibir({
           variante: "sucesso",
-
           titulo: "Cliente cadastrado com sucesso!",
         });
 
         navigation.goBack();
-
         return;
       }
 
@@ -213,7 +179,7 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
       // ==========================================
 
       const clienteExistente = clienteCtx.state.items.find(
-        (c) => c.identificacao === clienteId,
+        (c) => c.identificacao === idDaRota,
       );
 
       const dataEdicao = data as ClienteEdicaoFormValues;
@@ -222,48 +188,34 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
         dataEdicao.convenio?.nome && dataEdicao.convenio?.matricula
           ? {
               nome: dataEdicao.convenio.nome,
-
               matricula: dataEdicao.convenio.matricula,
             }
           : undefined;
 
       const dto: EditarClienteDTO = {
         nome: dataEdicao.nome,
-
         email: dataEdicao.email,
-
-        dataNascimento: converterData(dataEdicao.dataNascimento),
-
+        dataNascimento: converterData(dataEdicao.dataNascimento) as any,
         status: clienteExistente?.status ?? "ativo",
-
         telefones: [dataEdicao.telefone],
-
         endereco: clienteExistente?.endereco
           ? {
               ...clienteExistente.endereco,
-
               logradouro: dataEdicao.endereco?.logradouro || "",
-
               numero: dataEdicao.endereco?.numero || "",
-
               complemento: dataEdicao.endereco?.complemento,
-
               bairro: dataEdicao.endereco?.bairro || "",
-
               cidade: dataEdicao.endereco?.cidade || "",
-
               estado: dataEdicao.endereco?.estado || "",
             }
           : undefined,
-
         convenio,
       };
 
-      await clienteCtx.atualizarCliente(clienteId!, dto);
+      await clienteCtx.atualizarCliente(idDaRota!, dto);
 
       toast.exibir({
         variante: "sucesso",
-
         titulo: "Cliente atualizado com sucesso!",
       });
 
@@ -273,54 +225,15 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
 
       toast.exibir({
         variante: "erro",
-
         titulo: "Erro ao salvar cliente.",
       });
     }
-  };
-
-  const lidarComDesativar = () => {
-    Alert.alert("Desativar", "Deseja realmente desativar este cliente?", [
-      {
-        text: "Cancelar",
-        style: "cancel",
-      },
-
-      {
-        text: "Desativar",
-
-        style: "destructive",
-
-        onPress: async () => {
-          try {
-            if (clienteCtx && clienteId) {
-              await clienteCtx.desativarCliente(clienteId);
-
-              toast.exibir({
-                variante: "sucesso",
-
-                titulo: "Cliente desativado!",
-              });
-
-              navigation.goBack();
-            }
-          } catch {
-            toast.exibir({
-              variante: "erro",
-
-              titulo: "Erro ao desativar.",
-            });
-          }
-        },
-      },
-    ]);
   };
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
-
         backgroundColor: tema.cores.fundo.primario,
       }}
     >
@@ -332,55 +245,44 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             padding: tema.espacamento.md,
-
             paddingBottom: 120,
           }}
         >
           <Card
             style={{
               padding: tema.espacamento.md,
-
               gap: tema.espacamento.md,
             }}
           >
             {/* HEADER */}
-
             <View
               style={{
                 flexDirection: "row",
-
                 justifyContent: "space-between",
-
                 alignItems: "center",
               }}
             >
               <Texto variante="h3" peso="medio">
                 Dados Pessoais
               </Texto>
-
               <Icone nome={"usuario" as any} tamanho={24} />
             </View>
 
             {/* ID */}
-
             {isEdicao && (
               <View
                 style={{
                   flexDirection: "row",
-
                   alignItems: "center",
-
                   gap: tema.espacamento.sm,
                 }}
               >
-                <Texto cor="texto.secundario">{clienteId}</Texto>
-
+                <Texto cor="texto.secundario">{idDaRota}</Texto>
                 <Avatar nome="" />
               </View>
             )}
 
             {/* NOME */}
-
             <Controller
               control={control}
               name="nome"
@@ -395,7 +297,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             />
 
             {/* CPF */}
-
             {!isEdicao && (
               <Controller
                 control={control}
@@ -416,7 +317,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             )}
 
             {/* DATA */}
-
             {isEdicao && (
               <Controller
                 control={control}
@@ -438,7 +338,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             )}
 
             {/* EMAIL */}
-
             {isEdicao && (
               <Controller
                 control={control}
@@ -459,7 +358,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             )}
 
             {/* TELEFONE */}
-
             <Controller
               control={control}
               name="telefone"
@@ -479,7 +377,6 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             />
 
             {/* ENDEREÇO */}
-
             {isEdicao && (
               <>
                 <Texto variante="h3" peso="medio">
@@ -544,11 +441,9 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
             )}
 
             {/* BOTÕES */}
-
             <View
               style={{
                 gap: tema.espacamento.sm,
-
                 marginTop: tema.espacamento.md,
               }}
             >
@@ -556,24 +451,14 @@ export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
                 rotulo={isEdicao ? "Atualizar Cliente" : "Cadastrar Cliente"}
                 iconeDireita={"check" as any}
                 carregando={isSubmitting}
-                onPress={handleSubmit(
-                  onSubmit,
-
-                  (errors) => {
-                    console.log("ERROS:", errors);
-
-                    toast.exibir({
-                      variante: "erro",
-
-                      titulo: "Preencha os campos obrigatórios.",
-                    });
-                  },
-                )}
+                onPress={handleSubmit(onSubmit, (erros) => {
+                  console.log("ERROS:", erros);
+                  toast.exibir({
+                    variante: "erro",
+                    titulo: "Preencha os campos obrigatórios.",
+                  });
+                })}
               />
-
-              {isEdicao && (
-                <Botao rotulo="Desativar" onPress={lidarComDesativar} />
-              )}
             </View>
           </Card>
         </ScrollView>

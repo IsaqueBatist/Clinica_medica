@@ -21,7 +21,7 @@ export type DashboardStackParamList = {
 
 export type ClientesStackParamList = {
   [Routes.ListarClientes]: undefined;
-  [Routes.CadastroCliente]: undefined;
+  [Routes.CadastroCliente]: { id?: string };
   [Routes.DetalheCliente]: { id: string };
 };
 

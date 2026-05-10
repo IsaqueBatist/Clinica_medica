@@ -89,39 +89,43 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
     case "casa":
       return (
         <View style={wrap}>
+          {/* Telhado (um quadrado rotacionado) */}
           <View
             style={{
               position: "absolute",
-              top: t * 0.05,
-              width: t * 0.9,
-              height: t * 0.55,
+              top: t * 0.18,
+              width: t * 0.5,
+              height: t * 0.5,
               borderTopWidth: traco,
               borderLeftWidth: traco,
-              borderRightWidth: traco,
               borderColor: corResolvida,
-              transform: [{ rotate: "45deg" }, { scale: 0.7 }],
+              transform: [{ rotate: "45deg" }],
             }}
           />
+          {/* Base e Porta */}
           <View
             style={{
               position: "absolute",
-              bottom: t * 0.1,
-              width: t * 0.7,
-              height: t * 0.5,
+              bottom: t * 0.15,
+              width: t * 0.6,
+              height: t * 0.4,
               borderWidth: traco,
-              borderColor: corResolvida,
               borderTopWidth: 0,
+              borderColor: corResolvida,
+              alignItems: "center",
+              justifyContent: "flex-end",
             }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              bottom: t * 0.1,
-              width: t * 0.18,
-              height: t * 0.25,
-              backgroundColor: corResolvida,
-            }}
-          />
+          >
+            <View
+              style={{
+                width: t * 0.2,
+                height: t * 0.25,
+                borderWidth: traco,
+                borderBottomWidth: 0,
+                borderColor: corResolvida,
+              }}
+            />
+          </View>
         </View>
       );
 
@@ -339,35 +343,36 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
     case "aviso":
       return (
         <View style={wrap}>
-          <View
-            style={{
-              width: 0,
-              height: 0,
-              borderLeftWidth: t * 0.45,
-              borderRightWidth: t * 0.45,
-              borderBottomWidth: t * 0.8,
-              borderLeftColor: "transparent",
-              borderRightColor: "transparent",
-              borderBottomColor: corResolvida,
-            }}
-          />
+          {/* Losango de aviso (melhor que triângulo com hack de borda) */}
           <View
             style={{
               position: "absolute",
-              bottom: t * 0.22,
+              width: t * 0.65,
+              height: t * 0.65,
+              borderWidth: traco,
+              borderColor: corResolvida,
+              borderRadius: traco,
+              transform: [{ rotate: "45deg" }],
+            }}
+          />
+          {/* Exclamação - Linha */}
+          <View
+            style={{
+              position: "absolute",
+              top: t * 0.26,
               width: traco,
-              height: t * 0.3,
-              backgroundColor: tema.cores.fundo.superficie,
+              height: t * 0.25,
+              backgroundColor: corResolvida,
             }}
           />
+          {/* Exclamação - Ponto */}
           <View
             style={{
               position: "absolute",
-              bottom: t * 0.13,
+              bottom: t * 0.26,
               width: traco,
               height: traco,
-              borderRadius: traco,
-              backgroundColor: tema.cores.fundo.superficie,
+              backgroundColor: corResolvida,
             }}
           />
         </View>
@@ -436,49 +441,34 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
           </View>
         </View>
       );
-
     case "editar":
       return (
         <View style={wrap}>
+          {/* Ponta do lápis (Ancorada e Alinhada à diagonal) */}
           <View
             style={{
               position: "absolute",
-              left: t * 0.18,
-              top: t * 0.18,
-              width: t * 0.65,
-              height: traco * 1.8,
-              backgroundColor: corResolvida,
-              transform: [{ rotate: "45deg" }, { translateX: t * 0.05 }],
-              borderRadius: traco / 2,
-            }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              right: t * 0.12,
-              top: t * 0.12,
+              top: t * 0.6,
+              left: t * 0.25,
               width: t * 0.22,
-              height: traco * 1.8,
-              backgroundColor: corResolvida,
-              transform: [{ rotate: "45deg" }],
-              borderRadius: traco / 2,
+              height: t * 0.22,
+              borderBottomWidth: traco,
+              borderLeftWidth: traco,
+              borderColor: corResolvida,
+              borderRadius: traco / 2, // Pequeno arredondamento para a ponta
             }}
           />
+          {/* Corpo do lápis (Perfeitamente encaixado na ponta) */}
           <View
             style={{
               position: "absolute",
-              left: t * 0.1,
-              bottom: t * 0.12,
-              width: 0,
-              height: 0,
-              borderLeftWidth: t * 0.1,
-              borderTopWidth: t * 0.1,
-              borderLeftColor: "transparent",
-              borderTopColor: "transparent",
-              borderRightWidth: t * 0.1,
-              borderBottomWidth: t * 0.1,
-              borderRightColor: corResolvida,
-              borderBottomColor: corResolvida,
+              top: t * 0.15,
+              left: t * 0.45,
+              width: t * 0.25,
+              height: t * 0.55,
+              borderWidth: traco,
+              borderColor: corResolvida,
+              transform: [{ rotate: "45deg" }],
             }}
           />
         </View>
@@ -579,10 +569,10 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
           <View
             style={{
               position: "absolute",
-              left: t * 0.1,
+              left: t * 0.15,
               top: t * 0.15,
               bottom: t * 0.15,
-              width: t * 0.45,
+              width: t * 0.4,
               borderTopWidth: traco,
               borderLeftWidth: traco,
               borderBottomWidth: traco,
@@ -603,9 +593,9 @@ export function Icone({ nome, tamanho = 20, cor }: PropsIconeTema) {
             style={{
               position: "absolute",
               right: t * 0.1,
-              top: t * 0.3,
-              width: t * 0.22,
-              height: t * 0.22,
+              top: (t - t * 0.24) / 2,
+              width: t * 0.24,
+              height: t * 0.24,
               borderTopWidth: traco,
               borderRightWidth: traco,
               borderColor: corResolvida,

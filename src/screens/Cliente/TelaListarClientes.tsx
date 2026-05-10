@@ -8,26 +8,20 @@ import { Texto, Divisor } from "../../components/ui";
 import { ItemListaCliente } from "../../features/clientes/ItemListaCliente";
 import { useContextoCliente } from "../../hooks/useContextoCliente";
 import type { Cliente } from "../../types/models/cliente.type";
-import { useFab } from "../../contexts/ContextoFab";
-import { useFocusEffect } from "@react-navigation/native";
+import { ClientesStackParamList } from "../../navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
 
 export function TelaListarClientes() {
   const { tema } = useTema();
   const { state, criarCliente } = useContextoCliente();
-  const { show, hide } = useFab();
 
-  useFocusEffect(
-    useCallback(() => {
-      show();
-
-      return () => {
-        hide();
-      };
-    }, [show, hide])
-  );
 
   const [busca, setBusca] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ClientesStackParamList>>();
 
   const clientesFiltrados = useMemo(() => {
     return state.items.filter((cliente) =>
@@ -36,7 +30,7 @@ export function TelaListarClientes() {
   }, [busca, state.items]);
 
   const lidarComVerPerfil = (cliente: Cliente) => {
-    console.log("Navegar para o perfil do cliente:", cliente.nome);
+    navigation.navigate("DetalheCliente", { id: cliente.identificacao });
   };
 
   const handleRefresh = async () => {
@@ -54,7 +48,6 @@ export function TelaListarClientes() {
       style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
       edges={["left", "right"]}
     >
-      {/* Título da seção e Barra de busca */}
       <View style={{ padding: tema.espacamento.md, gap: tema.espacamento.md }}>
         <TextInput
           style={{
@@ -72,7 +65,6 @@ export function TelaListarClientes() {
         />
       </View>
 
-      {/* Lista de Clientes */}
       <FlatList
         data={clientesFiltrados}
         keyExtractor={(item) => item.identificacao}
@@ -97,7 +89,7 @@ export function TelaListarClientes() {
         }
         contentContainerStyle={{
           paddingHorizontal: tema.espacamento.md,
-          paddingBottom: 120, // Espaço extra para a BarraInferior
+          paddingBottom: 120,
           gap: tema.espacamento.md,
         }}
       />
