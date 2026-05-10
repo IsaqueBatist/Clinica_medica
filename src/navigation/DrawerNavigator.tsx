@@ -25,7 +25,7 @@ export interface PropsDrawerNavigator {
   aoSair?: () => void;
 }
 
-export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
+export function DrawerNavigator() {
   const { tema } = useTema();
 
   return (
