@@ -9,26 +9,12 @@ import {
 
 import { useTema } from "../hooks/useTema";
 import { DrawerNavigator } from "./DrawerNavigator";
+import { useContextoAuth } from "../contexts/ContextoAuth";
+import { StackLogin } from "./stacks/LoginStack";
 
-/**
- * AppNavigator — raiz da navegação autenticada.
- *
- * Responsabilidades:
- *  - Montar o `GestureHandlerRootView` (necessário para o swipe do Drawer).
- *  - Mapear nosso `ProvedorTema` para o `Theme` do react-navigation, evitando
- *    o flash de fundo branco entre transições.
- *  - Hospedar o `NavigationContainer` único do app.
- *
- * Quando vier autenticação real (NAV-04?), trocaremos `<DrawerNavigator />`
- * por um Stack raiz que escolhe entre Auth/App, sempre dentro deste mesmo
- * `NavigationContainer`.
- */
-export interface PropsAppNavigator {
-  aoSair?: () => void;
-}
-
-export function AppNavigator({ aoSair }: PropsAppNavigator) {
+export function AppNavigator() {
   const { tema, modo } = useTema();
+  const { isAuthenticated, carregando } = useContextoAuth();
 
   const temaNavegacao: Theme = {
     ...(modo === "escuro" ? DarkTheme : DefaultTheme),
@@ -43,10 +29,13 @@ export function AppNavigator({ aoSair }: PropsAppNavigator) {
     },
   };
 
+  // Evita renderizar as telas antes da verificação do AsyncStorage terminar
+  if (carregando) return null;
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer theme={temaNavegacao}>
-        <DrawerNavigator aoSair={aoSair} />
+        {isAuthenticated ? <DrawerNavigator /> : <StackLogin />}
       </NavigationContainer>
     </GestureHandlerRootView>
   );

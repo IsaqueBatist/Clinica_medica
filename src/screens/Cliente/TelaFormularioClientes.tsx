@@ -1,293 +1,583 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useContext, useEffect } from "react";
 
-import { clienteFormSchema, ClienteFormValues } from './ClienteFormSchema';
-
-// Hooks de Contexto e Tema
-import { useTema } from '../../hooks/useTema';
-import { useToast } from '../../hooks/useToast';
-import { ContextoCliente } from '../../contexts/ContextoCliente';
-
-// Componentes UI do Design System
 import {
-    Texto,
-    Botao,
-    EntradaTexto,
-    Card,
-    Avatar,
-    Icone,
-    CampoFormulario,
-    BotaoIcone,
-    MarcaApp
-} from '../../components/ui';
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from "react-native";
 
-// Componentes de Navegação
-import { BarraInferior, SidebarDrawer } from '../../components/navegacao';
+import { SafeAreaView } from "react-native-safe-area-context";
 
-// ------------------------------------------------------------------
-// Funções de Máscara Simples (Sem dependências externas)
-// ------------------------------------------------------------------
-const mascaraData = (valor: string) => {
-    return valor
-        .replace(/\D/g, '')
-        .replace(/(\d{2})(\d)/, '$1/$2')
-        .replace(/(\d{2})(\d)/, '$1/$2')
-        .substring(0, 10);
-};
+import { useForm, Controller } from "react-hook-form";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  clienteCadastroSchema,
+  clienteEdicaoSchema,
+  ClienteCadastroFormValues,
+  ClienteEdicaoFormValues,
+} from "./ClienteFormSchema";
+
+import { useTema } from "../../hooks/useTema";
+import { useToast } from "../../hooks/useToast";
+
+import { ContextoCliente } from "../../contexts/ContextoCliente";
+
+import { useNavigation } from "@react-navigation/native";
+
+import {
+  Texto,
+  Botao,
+  EntradaTexto,
+  Card,
+  Avatar,
+  Icone,
+  CampoFormulario,
+} from "../../components/ui";
+import {
+  CadastrarClienteDTO,
+  EditarClienteDTO,
+} from "../../types/services/ClienteService.service.type";
 
 const mascaraTelefone = (valor: string) => {
-    return valor
-        .replace(/\D/g, '')
-        .replace(/(\d{2})(\d)/, '($1) $2')
-        .replace(/(\d{4,5})(\d{4})/, '$1-$2')
-        .substring(0, 15);
+  return valor
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2")
+    .substring(0, 15);
 };
 
-// Interface para teste direto no App.tsx
+const mascaraCPF = (valor: string) => {
+  return valor
+    .replace(/\D/g, "")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+    .substring(0, 14);
+};
+
+const mascaraData = (valor: string) => {
+  return valor
+    .replace(/\D/g, "")
+    .replace(/(\d{2})(\d)/, "$1/$2")
+    .replace(/(\d{2})(\d)/, "$1/$2")
+    .substring(0, 10);
+};
+
+const converterData = (data?: string): Date | undefined => {
+  if (!data) return undefined;
+
+  const [dia, mes, ano] = data.split("/");
+
+  if (!dia || !mes || !ano) {
+    return undefined;
+  }
+
+  return new Date(Number(ano), Number(mes) - 1, Number(dia));
+};
+
 interface PropsTelaFormulario {
-    clienteId?: string;
+  clienteId?: string;
 }
 
+type FormValues = ClienteCadastroFormValues | ClienteEdicaoFormValues;
+
 export function TelaFormularioClientes({ clienteId }: PropsTelaFormulario) {
-    const { tema, modo, alternar } = useTema();
-    const toast = useToast();
-    const clienteCtx = useContext(ContextoCliente);
+  const { tema } = useTema();
 
-    const [drawerAberto, setDrawerAberto] = useState(false);
-    const [chaveBarra, setChaveBarra] = useState('home');
+  const toast = useToast();
 
-    const isEdicao = !!clienteId;
-    const [chaveSidebar, setChaveSidebar] = useState(isEdicao ? 'cliente.listar' : 'cliente.cadastrar');
+  const navigation = useNavigation<any>();
 
-    const { control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ClienteFormValues>({
-        resolver: zodResolver(clienteFormSchema),
-        defaultValues: {
-            nome: '', dataNascimento: '', email: '', telefone: '',
-            endereco: { logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '' },
-            convenio: { nome: '', matricula: '' }
-        }
-    });
+  const clienteCtx = useContext(ContextoCliente);
 
-    useEffect(() => {
-        if (isEdicao && clienteCtx && clienteId) {
-            const clienteExistente = clienteCtx.state.items.find(c => c.identificacao === clienteId);
-            if (clienteExistente) {
-                // Aqui você vai mapear os dados da API para o Form. 
-                // Coloquei um exemplo base, ajuste com os nomes reais que vem do seu backend:
-                reset({
-                    nome: clienteExistente.nome,
-                    // email: clienteExistente.email,
-                    // telefone: clienteExistente.telefones?.[0] || '',
-                    // ... mapeie o resto conforme a sua API
-                });
-            }
-        }
-    }, [isEdicao, clienteId, clienteCtx, reset]);
+  const isEdicao = !!clienteId;
 
-    const onSubmit = async (data: ClienteFormValues) => {
-        if (!clienteCtx) return;
-        try {
-            if (isEdicao && clienteId) {
-                await clienteCtx.atualizarCliente(clienteId, data as any);
-                toast.exibir({ variante: "sucesso", titulo: "Cliente atualizado com sucesso!" });
-            } else {
-                await clienteCtx.criarCliente(data as any);
-                toast.exibir({ variante: "sucesso", titulo: "Cliente cadastrado com sucesso!" });
-            }
-            console.log("Simulando: Voltando para a tela anterior (goBack)");
-        } catch (error) {
-            toast.exibir({ variante: "erro", titulo: "Erro ao salvar os dados." });
-        }
-    };
+  const {
+    control,
+    handleSubmit,
+    reset,
 
-    const lidarComDesativar = () => {
-        Alert.alert('Desativar', 'Tem certeza que deseja desativar este cliente?', [
-            { text: 'Cancelar', style: 'cancel' },
-            {
-                text: 'Desativar', style: 'destructive',
-                onPress: async () => {
-                    if (clienteCtx && clienteId) {
-                        try {
-                            await clienteCtx.desativarCliente(clienteId);
-                            toast.exibir({ variante: "sucesso", titulo: "Cliente desativado!" });
-                            console.log("Simulando: Voltando para a tela anterior (goBack)");
-                        } catch (e) {
-                            toast.exibir({ variante: "erro", titulo: "Erro ao desativar." });
-                        }
-                    }
-                }
-            }
-        ]);
-    };
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    resolver: zodResolver(
+      isEdicao ? clienteEdicaoSchema : clienteCadastroSchema,
+    ),
 
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }} edges={['top', 'left', 'right']}>
-            {/* CABEÇALHO */}
-            <View style={{
-                flexDirection: 'row', alignItems: 'center', gap: tema.espacamento.sm,
-                paddingHorizontal: tema.espacamento.md, paddingVertical: tema.espacamento.sm,
-                backgroundColor: tema.cores.fundo.superficie, borderBottomWidth: 1, borderBottomColor: tema.cores.borda.padrao,
-            }}>
-                <BotaoIcone nomeIcone={"menu" as any} rotuloAcessivel="Abrir menu" variante="neutro" tamanho={20} onPress={() => setDrawerAberto(true)} />
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: tema.espacamento.sm }}>
-                    <MarcaApp tamanho={28} />
-                    <Texto variante="corpo" peso="negrito">Clínica</Texto>
-                </View>
-                <BotaoIcone nomeIcone={"tema" as any} rotuloAcessivel={modo === 'claro' ? 'Escuro' : 'Claro'} variante="neutro" tamanho={20} onPress={alternar} />
-            </View>
+    defaultValues: {
+      nome: "",
 
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-                <ScrollView contentContainerStyle={{ padding: tema.espacamento.md, paddingBottom: 120 }} keyboardShouldPersistTaps="handled">
-                    <View style={{ marginBottom: tema.espacamento.md }}>
-                        <Texto variante="h1">{isEdicao ? 'Detalhes do Cliente' : 'Cadastrar Novo Cliente'}</Texto>
-                    </View>
+      cpf: "",
 
-                    <Card style={{ padding: tema.espacamento.md, gap: tema.espacamento.md }}>
+      telefone: "",
 
-                        {/* ============================== */}
-                        {/* SEÇÃO: DADOS PESSOAIS          */}
-                        {/* ============================== */}
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Texto variante="h3" peso="medio">Dados Pessoais</Texto>
-                            <Icone nome={"usuario" as any} tamanho={24} />
-                        </View>
+      email: "",
 
-                        {isEdicao && (
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: tema.espacamento.sm }}>
-                                <Texto cor="texto.secundario">{clienteId}</Texto>
-                                <Avatar nome="" />
-                            </View>
-                        )}
+      dataNascimento: "",
 
-                        <Controller control={control} name="nome" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Nome" erro={errors.nome?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.nome?.message} />
-                            </CampoFormulario>
-                        )} />
+      endereco: {
+        logradouro: "",
+        numero: "",
+        complemento: "",
+        bairro: "",
+        cidade: "",
+        estado: "",
+      },
 
-                        <Controller control={control} name="dataNascimento" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Data de Nascimento" erro={errors.dataNascimento?.message}>
-                                <EntradaTexto tipo="numero" placeholder="DD/MM/AAAA" value={value} onChangeText={(t) => onChange(mascaraData(t))} erro={!!errors.dataNascimento?.message} />
-                            </CampoFormulario>
-                        )} />
+      convenio: {
+        nome: "",
+        matricula: "",
+      },
+    } as any,
+  });
 
-                        <Controller control={control} name="email" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="E-mail" erro={errors.email?.message}>
-                                <EntradaTexto tipo="email" value={value} onChangeText={onChange} erro={!!errors.email?.message} />
-                            </CampoFormulario>
-                        )} />
+  useEffect(() => {
+    if (!isEdicao || !clienteId || !clienteCtx) {
+      return;
+    }
 
-                        <Controller control={control} name="telefone" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Telefone" erro={errors.telefone?.message}>
-                                <EntradaTexto tipo="telefone" placeholder="(11) 99999-9999" value={value} onChangeText={(t) => onChange(mascaraTelefone(t))} erro={!!errors.telefone?.message} />
-                            </CampoFormulario>
-                        )} />
-
-
-                        {/* ============================== */}
-                        {/* SEÇÃO: ENDEREÇO                */}
-                        {/* ============================== */}
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: tema.espacamento.md }}>
-                            <Texto variante="h3" peso="medio">Endereço</Texto>
-                            <Icone nome={"mapa" as any} tamanho={24} />
-                        </View>
-
-                        <Controller control={control} name="endereco.logradouro" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Logradouro" erro={errors.endereco?.logradouro?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.endereco?.logradouro?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        <Controller control={control} name="endereco.numero" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Número" erro={errors.endereco?.numero?.message}>
-                                <EntradaTexto tipo="numero" value={value} onChangeText={onChange} erro={!!errors.endereco?.numero?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        <Controller control={control} name="endereco.complemento" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Complemento" erro={errors.endereco?.complemento?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.endereco?.complemento?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        <Controller control={control} name="endereco.bairro" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Bairro" erro={errors.endereco?.bairro?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.endereco?.bairro?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        {/* Cidade e UF Lado a Lado */}
-                        <View style={{ flexDirection: 'row', gap: tema.espacamento.sm }}>
-                            <View style={{ flex: 3 }}>
-                                <Controller control={control} name="endereco.cidade" render={({ field: { onChange, value } }) => (
-                                    <CampoFormulario rotulo="Cidade" erro={errors.endereco?.cidade?.message}>
-                                        <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.endereco?.cidade?.message} />
-                                    </CampoFormulario>
-                                )} />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Controller control={control} name="endereco.estado" render={({ field: { onChange, value } }) => (
-                                    <CampoFormulario rotulo="UF" erro={errors.endereco?.estado?.message}>
-                                        <EntradaTexto value={value} autoCapitalize="characters" maxLength={2} onChangeText={onChange} erro={!!errors.endereco?.estado?.message} />
-                                    </CampoFormulario>
-                                )} />
-                            </View>
-                        </View>
-
-
-                        {/* ============================== */}
-                        {/* SEÇÃO: CONVÊNIO                */}
-                        {/* ============================== */}
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: tema.espacamento.md }}>
-                            <Texto variante="h3" peso="medio">Convênio</Texto>
-                            <Icone nome={"predio" as any} tamanho={24} />
-                        </View>
-
-                        <Controller control={control} name="convenio.nome" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Nome do Convênio" erro={errors.convenio?.nome?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.convenio?.nome?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        <Controller control={control} name="convenio.matricula" render={({ field: { onChange, value } }) => (
-                            <CampoFormulario rotulo="Matrícula do Conveniado" erro={errors.convenio?.matricula?.message}>
-                                <EntradaTexto value={value} onChangeText={onChange} erro={!!errors.convenio?.matricula?.message} />
-                            </CampoFormulario>
-                        )} />
-
-                        {/* ============================== */}
-                        {/* OPÇÕES (BOTÕES)                */}
-                        {/* ============================== */}
-                        <Texto variante="h3" peso="medio" style={{ marginTop: tema.espacamento.md }}>Opções</Texto>
-
-
-                        <View style={{ gap: tema.espacamento.sm }}>
-                            <Botao rotulo="Editar" iconeDireita={"editar" as any} onPress={handleSubmit(onSubmit)} carregando={isSubmitting} />
-                            <Botao rotulo="Desativar" onPress={lidarComDesativar} />
-                            <Botao rotulo="Deletar" onPress={() => Alert.alert('Aviso', 'Use a opção Desativar.', [{ text: 'OK' }])} />
-                            <Botao rotulo="Cadastrar Cliente" iconeDireita={"check" as any} onPress={handleSubmit(onSubmit)} carregando={isSubmitting} />
-                        </View>
-                    </Card>
-                </ScrollView>
-            </KeyboardAvoidingView>
-
-            {/* BARRAS DE NAVEGAÇÃO */}
-            <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
-                <BarraInferior chaveAtiva={chaveBarra} aoSelecionar={(chave) => setChaveBarra(chave)} itens={[
-                    { chave: 'home', icone: 'casa', rotuloAcessivel: 'Home' },
-                    { chave: 'busca', icone: 'busca', rotuloAcessivel: 'Buscar' },
-                    { chave: 'agenda', icone: 'calendario', rotuloAcessivel: 'Agenda' },
-                    { chave: 'perfil', icone: 'usuario', rotuloAcessivel: 'Perfil' },
-                ]} />
-            </View>
-
-            <SidebarDrawer aberto={drawerAberto} aoFechar={() => setDrawerAberto(false)} chaveAtiva={chaveSidebar} aoSelecionar={(chave) => { setChaveSidebar(chave); setDrawerAberto(false); }} grupos={[
-                { chave: 'cliente', rotulo: 'Cliente', icone: 'usuario', itens: [{ chave: 'cliente.cadastrar', rotulo: 'Cadastrar', icone: 'mais' }, { chave: 'cliente.listar', rotulo: 'Listar', icone: 'menu' }] },
-                { chave: 'medico', rotulo: 'Médico', icone: 'medico', itens: [{ chave: 'medico.cadastrar', rotulo: 'Cadastrar', icone: 'mais' }, { chave: 'medico.listar', rotulo: 'Listar', icone: 'menu' }] },
-            ]} cabecalho={<View style={{ flexDirection: 'row', alignItems: 'center', gap: tema.espacamento.sm }}><MarcaApp tamanho={32} /><Texto variante="corpo" peso="negrito">Clínica</Texto></View>} />
-        </SafeAreaView>
+    const cliente = clienteCtx.state.items.find(
+      (c) => c.identificacao === clienteId,
     );
+
+    if (!cliente) {
+      return;
+    }
+
+    reset({
+      nome: cliente.nome || "",
+
+      telefone: cliente.telefones?.[0] || "",
+
+      email: cliente.email || "",
+
+      dataNascimento: cliente.dataNascimento
+        ? new Date(cliente.dataNascimento).toLocaleDateString("pt-BR")
+        : "",
+
+      endereco: {
+        logradouro: cliente.endereco?.logradouro || "",
+
+        numero: cliente.endereco?.numero || "",
+
+        complemento: cliente.endereco?.complemento || "",
+
+        bairro: cliente.endereco?.bairro || "",
+
+        cidade: cliente.endereco?.cidade || "",
+
+        estado: cliente.endereco?.estado || "",
+      },
+
+      convenio: {
+        nome: cliente.convenio?.nome || "",
+
+        matricula: cliente.convenio?.matricula || "",
+      },
+    } as any);
+  }, [clienteCtx, clienteId, isEdicao, reset]);
+
+  const onSubmit = async (data: FormValues) => {
+    if (!clienteCtx) {
+      return;
+    }
+
+    try {
+      if (!isEdicao) {
+        const dto: CadastrarClienteDTO = {
+          nome: data.nome,
+
+          cpf: (data as ClienteCadastroFormValues).cpf.replace(/\D/g, ""),
+
+          telefones: [data.telefone],
+        };
+
+        await clienteCtx.criarCliente(dto);
+
+        toast.exibir({
+          variante: "sucesso",
+
+          titulo: "Cliente cadastrado com sucesso!",
+        });
+
+        navigation.goBack();
+
+        return;
+      }
+
+      // ==========================================
+      // EDIÇÃO
+      // ==========================================
+
+      const clienteExistente = clienteCtx.state.items.find(
+        (c) => c.identificacao === clienteId,
+      );
+
+      const dataEdicao = data as ClienteEdicaoFormValues;
+
+      const convenio =
+        dataEdicao.convenio?.nome && dataEdicao.convenio?.matricula
+          ? {
+              nome: dataEdicao.convenio.nome,
+
+              matricula: dataEdicao.convenio.matricula,
+            }
+          : undefined;
+
+      const dto: EditarClienteDTO = {
+        nome: dataEdicao.nome,
+
+        email: dataEdicao.email,
+
+        dataNascimento: converterData(dataEdicao.dataNascimento),
+
+        status: clienteExistente?.status ?? "ativo",
+
+        telefones: [dataEdicao.telefone],
+
+        endereco: clienteExistente?.endereco
+          ? {
+              ...clienteExistente.endereco,
+
+              logradouro: dataEdicao.endereco?.logradouro || "",
+
+              numero: dataEdicao.endereco?.numero || "",
+
+              complemento: dataEdicao.endereco?.complemento,
+
+              bairro: dataEdicao.endereco?.bairro || "",
+
+              cidade: dataEdicao.endereco?.cidade || "",
+
+              estado: dataEdicao.endereco?.estado || "",
+            }
+          : undefined,
+
+        convenio,
+      };
+
+      await clienteCtx.atualizarCliente(clienteId!, dto);
+
+      toast.exibir({
+        variante: "sucesso",
+
+        titulo: "Cliente atualizado com sucesso!",
+      });
+
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+
+      toast.exibir({
+        variante: "erro",
+
+        titulo: "Erro ao salvar cliente.",
+      });
+    }
+  };
+
+  const lidarComDesativar = () => {
+    Alert.alert("Desativar", "Deseja realmente desativar este cliente?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+
+      {
+        text: "Desativar",
+
+        style: "destructive",
+
+        onPress: async () => {
+          try {
+            if (clienteCtx && clienteId) {
+              await clienteCtx.desativarCliente(clienteId);
+
+              toast.exibir({
+                variante: "sucesso",
+
+                titulo: "Cliente desativado!",
+              });
+
+              navigation.goBack();
+            }
+          } catch {
+            toast.exibir({
+              variante: "erro",
+
+              titulo: "Erro ao desativar.",
+            });
+          }
+        },
+      },
+    ]);
+  };
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+
+        backgroundColor: tema.cores.fundo.primario,
+      }}
+    >
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            padding: tema.espacamento.md,
+
+            paddingBottom: 120,
+          }}
+        >
+          <Card
+            style={{
+              padding: tema.espacamento.md,
+
+              gap: tema.espacamento.md,
+            }}
+          >
+            {/* HEADER */}
+
+            <View
+              style={{
+                flexDirection: "row",
+
+                justifyContent: "space-between",
+
+                alignItems: "center",
+              }}
+            >
+              <Texto variante="h3" peso="medio">
+                Dados Pessoais
+              </Texto>
+
+              <Icone nome={"usuario" as any} tamanho={24} />
+            </View>
+
+            {/* ID */}
+
+            {isEdicao && (
+              <View
+                style={{
+                  flexDirection: "row",
+
+                  alignItems: "center",
+
+                  gap: tema.espacamento.sm,
+                }}
+              >
+                <Texto cor="texto.secundario">{clienteId}</Texto>
+
+                <Avatar nome="" />
+              </View>
+            )}
+
+            {/* NOME */}
+
+            <Controller
+              control={control}
+              name="nome"
+              render={({ field: { onChange, value } }) => (
+                <CampoFormulario
+                  rotulo="Nome"
+                  erro={errors.nome?.message as string}
+                >
+                  <EntradaTexto value={value} onChangeText={onChange} />
+                </CampoFormulario>
+              )}
+            />
+
+            {/* CPF */}
+
+            {!isEdicao && (
+              <Controller
+                control={control}
+                name="cpf"
+                render={({ field: { onChange, value } }) => (
+                  <CampoFormulario
+                    rotulo="CPF"
+                    erro={(errors as any)?.cpf?.message}
+                  >
+                    <EntradaTexto
+                      tipo="numero"
+                      value={value}
+                      onChangeText={(t) => onChange(mascaraCPF(t))}
+                    />
+                  </CampoFormulario>
+                )}
+              />
+            )}
+
+            {/* DATA */}
+
+            {isEdicao && (
+              <Controller
+                control={control}
+                name="dataNascimento"
+                render={({ field: { onChange, value } }) => (
+                  <CampoFormulario
+                    rotulo="Data de Nascimento"
+                    erro={(errors as any)?.dataNascimento?.message}
+                  >
+                    <EntradaTexto
+                      tipo="numero"
+                      placeholder="DD/MM/AAAA"
+                      value={value}
+                      onChangeText={(t) => onChange(mascaraData(t))}
+                    />
+                  </CampoFormulario>
+                )}
+              />
+            )}
+
+            {/* EMAIL */}
+
+            {isEdicao && (
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <CampoFormulario
+                    rotulo="E-mail"
+                    erro={(errors as any)?.email?.message}
+                  >
+                    <EntradaTexto
+                      tipo="email"
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  </CampoFormulario>
+                )}
+              />
+            )}
+
+            {/* TELEFONE */}
+
+            <Controller
+              control={control}
+              name="telefone"
+              render={({ field: { onChange, value } }) => (
+                <CampoFormulario
+                  rotulo="Telefone"
+                  erro={errors.telefone?.message as string}
+                >
+                  <EntradaTexto
+                    tipo="telefone"
+                    placeholder="(11) 99999-9999"
+                    value={value}
+                    onChangeText={(t) => onChange(mascaraTelefone(t))}
+                  />
+                </CampoFormulario>
+              )}
+            />
+
+            {/* ENDEREÇO */}
+
+            {isEdicao && (
+              <>
+                <Texto variante="h3" peso="medio">
+                  Endereço
+                </Texto>
+
+                <Controller
+                  control={control}
+                  name="endereco.logradouro"
+                  render={({ field: { onChange, value } }) => (
+                    <CampoFormulario rotulo="Logradouro">
+                      <EntradaTexto value={value} onChangeText={onChange} />
+                    </CampoFormulario>
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="endereco.numero"
+                  render={({ field: { onChange, value } }) => (
+                    <CampoFormulario rotulo="Número">
+                      <EntradaTexto value={value} onChangeText={onChange} />
+                    </CampoFormulario>
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="endereco.bairro"
+                  render={({ field: { onChange, value } }) => (
+                    <CampoFormulario rotulo="Bairro">
+                      <EntradaTexto value={value} onChangeText={onChange} />
+                    </CampoFormulario>
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="endereco.cidade"
+                  render={({ field: { onChange, value } }) => (
+                    <CampoFormulario rotulo="Cidade">
+                      <EntradaTexto value={value} onChangeText={onChange} />
+                    </CampoFormulario>
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="endereco.estado"
+                  render={({ field: { onChange, value } }) => (
+                    <CampoFormulario rotulo="UF">
+                      <EntradaTexto
+                        value={value}
+                        maxLength={2}
+                        autoCapitalize="characters"
+                        onChangeText={onChange}
+                      />
+                    </CampoFormulario>
+                  )}
+                />
+              </>
+            )}
+
+            {/* BOTÕES */}
+
+            <View
+              style={{
+                gap: tema.espacamento.sm,
+
+                marginTop: tema.espacamento.md,
+              }}
+            >
+              <Botao
+                rotulo={isEdicao ? "Atualizar Cliente" : "Cadastrar Cliente"}
+                iconeDireita={"check" as any}
+                carregando={isSubmitting}
+                onPress={handleSubmit(
+                  onSubmit,
+
+                  (errors) => {
+                    console.log("ERROS:", errors);
+
+                    toast.exibir({
+                      variante: "erro",
+
+                      titulo: "Preencha os campos obrigatórios.",
+                    });
+                  },
+                )}
+              />
+
+              {isEdicao && (
+                <Botao rotulo="Desativar" onPress={lidarComDesativar} />
+              )}
+            </View>
+          </Card>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }

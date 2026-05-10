@@ -11,48 +11,23 @@ import { Texto } from "../../components/ui/Texto";
 import { MarcaApp } from "../../components/ui/MarcaApp";
 import { Botao } from "../../components/ui/Botao";
 import { ENTRADAS_DRAWER, type DrawerParamList } from "../types";
-
-/**
- * CustomDrawerContent — substitui o `DrawerItemList` padrão pelo nosso visual.
- *
- * Renderiza `ENTRADAS_DRAWER` em dois modos:
- *  - Item solto → linha clicável que navega.
- *  - Grupo → cabeçalho clicável com chevron + lista de subitens identada.
- *    Estado de expansão é local (`useState`) e persiste durante a sessão
- *    porque o componente não desmonta quando o drawer fecha.
- *
- * Detecção de "ativo" precisa olhar duas camadas: o nome do Stack ativo
- * (rota do Drawer) E o nome da tela interna ativa (rota do Stack filho).
- * Sem a tela interna, todos os subitens de um grupo ficariam destacados ao
- * mesmo tempo enquanto a seção estivesse aberta.
- *
- * `aoSair` é injetado pelo `DrawerNavigator` via prop `drawerContent`.
- */
-export interface PropsCustomDrawerContent extends DrawerContentComponentProps {
-  aoSair?: () => void;
-}
+import { useContextoAuth } from "../../contexts/ContextoAuth";
 
 export function CustomDrawerContent({
   state,
   navigation,
-  aoSair,
-}: PropsCustomDrawerContent) {
+}: DrawerContentComponentProps) {
   const { tema, modo, alternar } = useTema();
+  const { logout } = useContextoAuth();
 
-  // Stack ativo (rota do Drawer): "DashboardStack", "ClientesStack" ou "ConsultasStack".
   const rotaDrawerAtiva = state.routes[state.index];
   const stackAtivo = rotaDrawerAtiva?.name as keyof DrawerParamList;
 
-  // Tela ativa DENTRO do Stack (ex: "CadastroCliente"). Pode ser undefined se
-  // o Stack ainda não foi montado nesta sessão.
   const estadoStack = rotaDrawerAtiva?.state as
     | { index?: number; routes?: { name: string }[] }
     | undefined;
-  const telaInternaAtiva =
-    estadoStack?.routes?.[estadoStack.index ?? 0]?.name;
+  const telaInternaAtiva = estadoStack?.routes?.[estadoStack.index ?? 0]?.name;
 
-  // Inicia com todos os grupos abertos. Mantemos em state para que, se o user
-  // colapsar um grupo, a preferência persista até o app fechar.
   const [abertos, setAbertos] = useState<Record<string, boolean>>(() => {
     const inicial: Record<string, boolean> = {};
     for (const entrada of ENTRADAS_DRAWER) {
@@ -204,15 +179,13 @@ export function CustomDrawerContent({
           tamanho="sm"
           onPress={alternar}
         />
-        {aoSair && (
-          <Botao
-            rotulo="Sair"
-            variante="fantasma"
-            iconeEsquerda="sair"
-            tamanho="sm"
-            onPress={aoSair}
-          />
-        )}
+        <Botao
+          rotulo="Sair"
+          variante="fantasma"
+          iconeEsquerda="sair"
+          tamanho="sm"
+          onPress={logout}
+        />
       </View>
     </View>
   );
@@ -241,18 +214,14 @@ function ItemNavegacao({ rotulo, icone, ativo, onPress }: PropsItemNavegacao) {
         borderRadius: tema.raios.md,
         backgroundColor: ativo ? tema.cores.fundo.suave : "transparent",
         borderLeftWidth: 2,
-        borderLeftColor: ativo
-          ? tema.cores.marca.secundario
-          : "transparent",
+        borderLeftColor: ativo ? tema.cores.marca.secundario : "transparent",
       }}
     >
       {icone && (
         <Icone
           nome={icone}
           tamanho={16}
-          cor={
-            ativo ? tema.cores.marca.primario : tema.cores.texto.suave
-          }
+          cor={ativo ? tema.cores.marca.primario : tema.cores.texto.suave}
         />
       )}
       <Texto

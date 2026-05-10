@@ -11,6 +11,7 @@ import { EntradaTexto } from "../../components/ui/EntradaTexto";
 import { MarcaApp } from "../../components/ui/MarcaApp";
 import { Texto } from "../../components/ui/Texto";
 import { useContextoCliente } from "../../hooks";
+import { useContextoAuth } from "../../contexts/ContextoAuth";
 
 /**
  * TelaLogin — exemplo de uso integrado: form, validação local, loading,
@@ -20,15 +21,12 @@ import { useContextoCliente } from "../../hooks";
  * deve viver num hook dedicado ou library como zod.
  */
 
-export interface PropsTelaLogin {
-  aoEntrar: () => void;
-}
-
-export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
+export function TelaLogin() {
   const insets = useSafeAreaInsets();
   const { tema } = useTema();
   const toast = useToast();
   const { state } = useContextoCliente();
+  const { login } = useContextoAuth();
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -55,17 +53,9 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
     setEnviando(true);
     setErros({});
     try {
-      // Mock: simula latência. Use senha "errada" para forçar erro.
-      await new Promise((r) => setTimeout(r, 1000));
-      if (senha === "errada") {
-        throw new Error("Credenciais inválidas. Verifique e-mail e senha.");
-      }
-      toast.exibir({
-        variante: "sucesso",
-        titulo: "Bem-vindo",
-        descricao: "Login efetuado com sucesso.",
-      });
-      aoEntrar();
+      await login(email, senha);
+      // O toast foi removido pois a mudança de Stack é imediata,
+      // causando o unmount do componente antes que o toast seja visível na nova árvore.
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Falha ao entrar.";
       setErros({ geral: msg });
@@ -96,94 +86,90 @@ export function TelaLogin({ aoEntrar }: PropsTelaLogin) {
         }}
       >
         <View
-            style={{
-              alignSelf: "center",
-              width: "100%",
-              maxWidth: 420,
-              gap: tema.espacamento.xl,
-            }}
-          >
-            <View style={{ alignItems: "center", gap: tema.espacamento.sm }}>
-              <MarcaApp tamanho={64} />
-              <Texto variante="h2" peso="negrito" alinhamento="center">
-                Clínica
-              </Texto>
-              <Texto
-                variante="corpo"
-                cor="texto.secundario"
-                alinhamento="center"
-              >
-                Entre com sua conta para continuar
-              </Texto>
-            </View>
-
-            <View
-              style={{
-                gap: tema.espacamento.lg,
-                backgroundColor: tema.cores.fundo.superficie,
-                padding: tema.espacamento.xl,
-                borderRadius: tema.raios.lg,
-                borderWidth: 1,
-                borderColor: tema.cores.borda.padrao,
-              }}
-            >
-              <CampoFormulario rotulo="E-mail" obrigatorio erro={erros.email}>
-                <EntradaTexto
-                  tipo="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChangeText={setEmail}
-                  erro={!!erros.email}
-                  editable={!enviando}
-                />
-              </CampoFormulario>
-
-              <CampoFormulario
-                rotulo="Senha"
-                obrigatorio
-                erro={erros.senha}
-                ajuda="Mínimo 6 caracteres."
-              >
-                <EntradaTexto
-                  tipo="senha"
-                  placeholder="••••••••"
-                  value={senha}
-                  onChangeText={setSenha}
-                  erro={!!erros.senha}
-                  editable={!enviando}
-                />
-              </CampoFormulario>
-
-              {erros.geral && (
-                <View
-                  style={{
-                    padding: tema.espacamento.md,
-                    borderRadius: tema.raios.md,
-                    backgroundColor: tema.cores.fundo.suave,
-                    borderLeftWidth: 3,
-                    borderLeftColor: tema.cores.status.erro,
-                  }}
-                >
-                  <Texto variante="legenda" cor="status.erro" peso="medio">
-                    {erros.geral}
-                  </Texto>
-                </View>
-              )}
-
-              <Botao
-                rotulo="Entrar"
-                variante="primario"
-                tamanho="lg"
-                larguraTotal
-                carregando={enviando}
-                onPress={entrar}
-              />
-            </View>
-
-            <Texto variante="legenda" cor="texto.suave" alinhamento="center">
-              Dica: digite a senha "errada" para ver o estado de erro.
+          style={{
+            alignSelf: "center",
+            width: "100%",
+            maxWidth: 420,
+            gap: tema.espacamento.xl,
+          }}
+        >
+          <View style={{ alignItems: "center", gap: tema.espacamento.sm }}>
+            <MarcaApp tamanho={64} />
+            <Texto variante="h2" peso="negrito" alinhamento="center">
+              Clínica
+            </Texto>
+            <Texto variante="corpo" cor="texto.secundario" alinhamento="center">
+              Entre com sua conta para continuar
             </Texto>
           </View>
+
+          <View
+            style={{
+              gap: tema.espacamento.lg,
+              backgroundColor: tema.cores.fundo.superficie,
+              padding: tema.espacamento.xl,
+              borderRadius: tema.raios.lg,
+              borderWidth: 1,
+              borderColor: tema.cores.borda.padrao,
+            }}
+          >
+            <CampoFormulario rotulo="E-mail" obrigatorio erro={erros.email}>
+              <EntradaTexto
+                tipo="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChangeText={setEmail}
+                erro={!!erros.email}
+                editable={!enviando}
+              />
+            </CampoFormulario>
+
+            <CampoFormulario
+              rotulo="Senha"
+              obrigatorio
+              erro={erros.senha}
+              ajuda="Mínimo 6 caracteres."
+            >
+              <EntradaTexto
+                tipo="senha"
+                placeholder="••••••••"
+                value={senha}
+                onChangeText={setSenha}
+                erro={!!erros.senha}
+                editable={!enviando}
+              />
+            </CampoFormulario>
+
+            {erros.geral && (
+              <View
+                style={{
+                  padding: tema.espacamento.md,
+                  borderRadius: tema.raios.md,
+                  backgroundColor: tema.cores.fundo.suave,
+                  borderLeftWidth: 3,
+                  borderLeftColor: tema.cores.status.erro,
+                }}
+              >
+                <Texto variante="legenda" cor="status.erro" peso="medio">
+                  {erros.geral}
+                </Texto>
+              </View>
+            )}
+
+            <Botao
+              rotulo="Entrar"
+              variante="primario"
+              tamanho="lg"
+              larguraTotal
+              carregando={enviando}
+              onPress={entrar}
+            />
+          </View>
+
+          <Texto variante="legenda" cor="texto.suave" alinhamento="center">
+            Dica: digite a senha "errada" para ver o estado de erro.
+          </Texto>
+        </View>
       </FormScreen>
     </View>
   );

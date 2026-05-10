@@ -5,6 +5,7 @@ import { ProvedorCliente } from "./ContextoCliente";
 import { ProvedorMedico } from "./ContextoMedico";
 import { ProvedorEspecialidade } from "./ContextoEspecialidade";
 import { ProvedorConsulta } from "./ContextoConsulta";
+import { ProvedorAuth } from "./ContextoAuth";
 
 interface PropsProvedoresApp {
   children: ReactNode;
@@ -28,15 +29,17 @@ function MotorTemporizador() {
  */
 export function ProvedoresApp({ children }: PropsProvedoresApp) {
   return (
-    <ProvedorEspecialidade>
-      <ProvedorCliente>
-        <ProvedorMedico>
-          <ProvedorConsulta>
-            <MotorTemporizador />
-            {children}
-          </ProvedorConsulta>
-        </ProvedorMedico>
-      </ProvedorCliente>
-    </ProvedorEspecialidade>
+    <ProvedorAuth>
+      <ProvedorEspecialidade>
+        <ProvedorCliente>
+          <ProvedorMedico>
+            <ProvedorConsulta>
+              <MotorTemporizador />
+              {children}
+            </ProvedorConsulta>
+          </ProvedorMedico>
+        </ProvedorCliente>
+      </ProvedorEspecialidade>
+    </ProvedorAuth>
   );
 }

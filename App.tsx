@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -6,7 +6,6 @@ import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
 import { AppNavigator } from "./src/navigation";
 import { ProvedoresApp } from "./src/contexts";
-import { TelaFormularioClientes } from "./src/screens/Cliente/TelaFormularioClientes";
 
 /**
  * Entrada do app.
@@ -24,15 +23,13 @@ import { TelaFormularioClientes } from "./src/screens/Cliente/TelaFormularioClie
  * remontagem limpa.
  */
 export default function App() {
-  const [autenticado, setAutenticado] = useState(false);
-
   return (
     <SafeAreaProvider>
       <ProvedorTema modoInicial="claro">
         <ProvedorToast>
           <ProvedoresApp>
+            <AppNavigator />
             <StatusBar style="auto" />
-            <TelaFormularioClientes />
           </ProvedoresApp>
         </ProvedorToast>
       </ProvedorTema>

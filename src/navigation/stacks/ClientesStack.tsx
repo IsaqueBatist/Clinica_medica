@@ -6,6 +6,7 @@ import { TelaListarClientes } from "../../screens/Cliente/TelaListarClientes";
 import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ClientesStackParamList } from "../types";
+import { TelaFormularioClientes } from "../../screens/Cliente/TelaFormularioClientes";
 
 const Stack = createNativeStackNavigator<ClientesStackParamList>();
 
@@ -21,7 +22,7 @@ export function ClientesStack() {
       />
       <Stack.Screen
         name={Routes.CadastroCliente}
-        component={TelaPlaceholder}
+        component={TelaFormularioClientes}
         options={{ title: "Cadastrar cliente" }}
       />
       <Stack.Screen
