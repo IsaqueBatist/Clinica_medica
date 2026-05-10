@@ -21,28 +21,24 @@ Aplicação mobile para agendamento de consultas médicas, desenvolvida com **Re
 ### Fluxo de Marcação de Consulta (5 Etapas)
 
 <div align="center">
-  <img src="./assets/screenshots/04-step1-cliente.png" width="30%" alt="Step 1: Cliente"/>
-  <img src="./assets/screenshots/05-step2-especialidade.png" width="30%" alt="Step 2: Especialidade"/>
-  <img src="./assets/screenshots/06-step3-medico.png" width="30%" alt="Step 3: Médico"/>
-</div>
-
-<div align="center">
-  <img src="./assets/screenshots/07-step4-agenda.png" width="30%" alt="Step 4: Agenda"/>
-  <img src="./assets/screenshots/08-step5-resumo.png" width="30%" alt="Step 5: Resumo"/>
+  <img src="./assets/screenshots/04-step1-cliente.jpg" width="30%" alt="Step 1: Cliente"/>
+  <img src="./assets/screenshots/05-step3-medico.jpg" width="30%" alt="Step 2: Medico"/>
+  <img src="./assets/screenshots/06-step4-agenda.jpg" width="30%" alt="Step 3: Agenda"/>
+  <img src="./assets/screenshots/07-step5-resumo.jpg" width="30%" alt="Step 5: Resumo"/>
 </div>
 
 ### Fluxo de Confirmação, Realização e Encerramento
 
 <div align="center">
-  <img src="./assets/screenshots/09-confirmacao.png" width="30%" alt="Confirmação"/>
-  <img src="./assets/screenshots/10-realizacao.png" width="30%" alt="Realização"/>
-  <img src="./assets/screenshots/11-encerramento.png" width="30%" alt="Encerramento"/>
+  <img src="./assets/screenshots/08-confirmacao.jpg" width="30%" alt="Confirmação"/>
+  <img src="./assets/screenshots/09-realizacao.png" width="30%" alt="Realização"/>
+  <img src="./assets/screenshots/10-encerramento.png" width="30%" alt="Encerramento"/>
 </div>
 
 ### Cancelamento de Consulta
 
 <div align="center">
-  <img src="./assets/screenshots/12-cancelamento.png" width="30%" alt="Cancelamento"/>
+  <img src="./assets/screenshots/11-cancelamento.jpg" width="30%" alt="Cancelamento"/>
 </div>
 
 ---
@@ -460,7 +456,9 @@ Navegação (DrawerNavigator)
 
 ## 👥 Equipe
 
-- **Desenvolvedor:** [Isaque Baptista](https://github.com/IsaqueBatist)
+- **Desenvolvedor:** [Beatriz Silva de Camargo](https://github.com/bibiritriz)
+- **Desenvolvedor:** [Isaque Batistta](https://github.com/IsaqueBatist)
+- **Desenvolvedor:** [ Ivo Souza Araujo ](https://github.com/ivoosa7)
 
 ---
 
