@@ -11,6 +11,7 @@ import { useTema } from "../hooks/useTema";
 import { DrawerNavigator } from "./DrawerNavigator";
 import { useContextoAuth } from "../contexts/ContextoAuth";
 import { StackLogin } from "./stacks/LoginStack";
+import { TelaShowcase } from "../screens";
 
 export function AppNavigator() {
   const { tema, modo } = useTema();
@@ -35,7 +36,7 @@ export function AppNavigator() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer theme={temaNavegacao}>
-        {isAuthenticated ? <DrawerNavigator /> : <StackLogin />}
+        {isAuthenticated ? <DrawerNavigator /> : <TelaShowcase />}
       </NavigationContainer>
     </GestureHandlerRootView>
   );

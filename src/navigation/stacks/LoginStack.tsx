@@ -1,7 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { TelaLogin } from "../../screens/Login/TelaLogin";
-import { DashboardStackParamList } from "../types";
 
 const Stack = createNativeStackNavigator();
 
