@@ -5,9 +5,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DrawerActions } from "@react-navigation/native";
 
 import { useTema } from "../../hooks";
-import { Routes } from "../../constants/routes";
 import { BotaoIcone } from "../../components/ui/BotaoIcone/BotaoIcone";
 import { Texto } from "../../components/ui/Texto/Texto";
+import { Avatar } from "../../components";
+import { useContextoAuth } from "../../contexts/ContextoAuth";
 
 /**
  * AppHeader — header customizado injetado em todos os Stacks via
@@ -20,16 +21,11 @@ import { Texto } from "../../components/ui/Texto/Texto";
 export function AppHeader(props: NativeStackHeaderProps) {
   const titulo = props.options.title ?? props.route.name;
   const { tema } = useTema();
+  const { usuario } = useContextoAuth();
   const { top } = useSafeAreaInsets();
 
   function abrir() {
     props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
-  function irParaInicio() {
-    props.navigation
-      .getParent()
-      ?.dispatch(DrawerActions.jumpTo(Routes.DashboardStack));
   }
 
   return (
@@ -64,12 +60,7 @@ export function AppHeader(props: NativeStackHeaderProps) {
         >
           {titulo}
         </Texto>
-        <BotaoIcone
-          nomeIcone="casa"
-          rotuloAcessivel="Ir para o início"
-          variante="neutro"
-          onPress={irParaInicio}
-        />
+        {usuario && <Avatar nome={usuario?.nome} />}
       </View>
     </View>
   );

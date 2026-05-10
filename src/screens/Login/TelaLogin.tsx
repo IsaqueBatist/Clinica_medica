@@ -54,8 +54,6 @@
       setErros({});
       try {
         await login(email, senha);
-        // O toast foi removido pois a mudança de Stack é imediata,
-        // causando o unmount do componente antes que o toast seja visível na nova árvore.
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Falha ao entrar.";
         setErros({ geral: msg });

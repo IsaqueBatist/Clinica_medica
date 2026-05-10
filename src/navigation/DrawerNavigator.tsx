@@ -30,9 +30,7 @@ export function DrawerNavigator({ aoSair }: PropsDrawerNavigator) {
 
   return (
     <Drawer.Navigator
-      drawerContent={(props) => (
-        <CustomDrawerContent {...props} />
-      )}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
         drawerStyle: {

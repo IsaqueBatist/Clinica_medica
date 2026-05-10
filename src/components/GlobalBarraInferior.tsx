@@ -5,8 +5,16 @@ import { Routes } from "../constants/routes";
 
 const ITENS: ItemBarra[] = [
   { chave: Routes.DashboardStack, icone: "casa", rotuloAcessivel: "Dashboard" },
-  { chave: Routes.ClientesStack, icone: "usuario", rotuloAcessivel: "Clientes" },
-  { chave: Routes.ConsultasStack, icone: "calendario", rotuloAcessivel: "Marcar consulta" },
+  {
+    chave: Routes.ClientesStack,
+    icone: "usuario",
+    rotuloAcessivel: "Clientes",
+  },
+  {
+    chave: Routes.ConsultasStack,
+    icone: "calendario",
+    rotuloAcessivel: "Marcar consulta",
+  },
 ];
 
 interface PropsGlobalBarraInferior {
