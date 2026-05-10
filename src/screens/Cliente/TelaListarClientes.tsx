@@ -1,21 +1,31 @@
 import React, { useState, useMemo } from 'react';
-import { View, FlatList, TextInput, RefreshControl, KeyboardAvoidingView, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, FlatList, TextInput, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Importações do Design System do seu grupo
+// Importações do Design System
 import { useTema } from '../../hooks/useTema';
-import { Texto, BotaoIcone, Divisor } from '../../components/ui';
+import {
+  Texto,
+  BotaoIcone,
+  Divisor,
+  MarcaApp
+} from '../../components/ui';
+import { BarraInferior, SidebarDrawer } from '../../components/navegacao';
 import { ItemListaCliente } from '../../features/clientes/ItemListaCliente';
 import { useContextoCliente } from '../../hooks/useContextoCliente';
 import type { Cliente } from '../../types/models/cliente.type';
 
 export function TelaListarClientes() {
-  const insets = useSafeAreaInsets();
-  const { tema } = useTema();
+  const { tema, modo, alternar } = useTema();
   const { state, criarCliente } = useContextoCliente();
 
   const [busca, setBusca] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+
+  // Estados para navegação e menu lateral
+  const [drawerAberto, setDrawerAberto] = useState(false);
+  const [chaveSidebar, setChaveSidebar] = useState('cliente.listar');
+  const [chaveBarra, setChaveBarra] = useState('home');
 
   const clientesFiltrados = useMemo(() => {
     return state.items.filter((cliente) =>
@@ -25,11 +35,6 @@ export function TelaListarClientes() {
 
   const lidarComVerPerfil = (cliente: Cliente) => {
     console.log("Navegar para o perfil do cliente:", cliente.nome);
-    // Aqui no futuro entrará a navegação: navigation.navigate('PerfilCliente', { id: cliente.id })
-  };
-
-  const lidarComEditar = (cliente: Cliente) => {
-    console.log("Abrir modal de edição do cliente:", cliente.nome);
   };
 
   const handleRefresh = async () => {
@@ -43,85 +48,159 @@ export function TelaListarClientes() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: tema.cores.fundo.primario,
-        paddingTop: insets.top,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-        paddingBottom: insets.bottom,
-      }}
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: tema.cores.fundo.primario }}
+      edges={['top', 'left', 'right']}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
+      {/* Cabeçalho fixo com Hamburger */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: tema.espacamento.sm,
+          paddingHorizontal: tema.espacamento.md,
+          paddingVertical: tema.espacamento.sm,
+          backgroundColor: tema.cores.fundo.superficie,
+          borderBottomWidth: 1,
+          borderBottomColor: tema.cores.borda.padrao,
+        }}
       >
-        {/* Cabeçalho da Lista (Igual ao Figma) */}
-        <View 
-          style={{ 
-            flexDirection: 'row', 
-            justifyContent: 'space-between', 
+        <BotaoIcone
+          nomeIcone="menu"
+          rotuloAcessivel="Abrir menu"
+          variante="neutro"
+          tamanho={20}
+          onPress={() => setDrawerAberto(true)}
+        />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
             alignItems: 'center',
-            padding: tema.espacamento.md 
+            gap: tema.espacamento.sm,
           }}
         >
-          <Texto variante="h1">Clientes Cadastrados</Texto> 
-          <BotaoIcone 
-            nomeIcone="chevronBaixo" 
-            rotuloAcessivel="Abrir filtros" 
-            onPress={() => console.log("Abrir filtros")}
-          />
+          <MarcaApp tamanho={28} />
+          <Texto variante="corpo" peso="negrito">
+            Clínica
+          </Texto>
         </View>
+        <BotaoIcone
+          nomeIcone="tema"
+          rotuloAcessivel={
+            modo === 'claro'
+              ? 'Mudar para modo escuro'
+              : 'Mudar para modo claro'
+          }
+          variante="neutro"
+          tamanho={20}
+          onPress={alternar}
+        />
+      </View>
 
-        {/* Barra de busca */}
+      {/* Título da seção e Barra de busca */}
+      <View style={{ padding: tema.espacamento.md, gap: tema.espacamento.md }}>
+        <Texto variante="h1">Clientes Cadastrados</Texto>
+
         <TextInput
           style={{
-            marginHorizontal: tema.espacamento.md,
-            marginBottom: tema.espacamento.md,
             padding: tema.espacamento.sm,
             borderWidth: 1,
             borderColor: tema.cores.borda.padrao,
             borderRadius: tema.raios.md,
-            backgroundColor: tema.cores.fundo.secundario,
+            backgroundColor: tema.cores.fundo.superficie,
+            color: tema.cores.texto.primario,
           }}
           placeholder="Buscar cliente..."
+          placeholderTextColor={tema.cores.texto.suave}
           value={busca}
           onChangeText={setBusca}
         />
+      </View>
 
-        {/* A Lista de fato */}
-        <FlatList
-          data={clientesFiltrados}
-          keyExtractor={(item) => item.identificacao}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
-            <ItemListaCliente 
-              cliente={item} 
-              aoVerPerfil={lidarComVerPerfil}
-              aoEditar={lidarComEditar}
-            />
-          )}
-          ItemSeparatorComponent={() => <Divisor />}
-          ListEmptyComponent={
-            <View style={{ alignItems: 'center', padding: tema.espacamento.md }}>
-              <Texto variante="corpo" style={{ color: tema.cores.texto.suave }}>
-                Nenhum cliente encontrado.
-              </Texto>
-            </View>
-          }
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-          contentContainerStyle={{
-            paddingHorizontal: tema.espacamento.md,
-            paddingBottom: tema.espacamento.xl,
-            gap: tema.espacamento.md
-          }}
+      {/* Lista de Clientes */}
+      <FlatList
+        data={clientesFiltrados}
+        keyExtractor={(item) => item.identificacao}
+        renderItem={({ item }) => (
+          <ItemListaCliente
+            cliente={item}
+            aoVerPerfil={lidarComVerPerfil}
+          />
+        )}
+        ItemSeparatorComponent={() => <Divisor />}
+        ListEmptyComponent={
+          <View style={{ alignItems: 'center', padding: tema.espacamento.md }}>
+            <Texto variante="corpo" cor="texto.suave">
+              Nenhum cliente encontrado.
+            </Texto>
+          </View>
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[tema.cores.marca.primario]}
+            tintColor={tema.cores.marca.primario}
+          />
+        }
+        contentContainerStyle={{
+          paddingHorizontal: tema.espacamento.md,
+          paddingBottom: 120, // Espaço extra para a BarraInferior
+          gap: tema.espacamento.md
+        }}
+      />
+
+      {/* Barra Inferior fixa */}
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+        <BarraInferior
+          chaveAtiva={chaveBarra}
+          aoSelecionar={setChaveBarra}
+          itens={[
+            { chave: 'home', icone: 'casa', rotuloAcessivel: 'Home' },
+            { chave: 'busca', icone: 'busca', rotuloAcessivel: 'Buscar' },
+            { chave: 'agenda', icone: 'calendario', rotuloAcessivel: 'Agenda' },
+            { chave: 'perfil', icone: 'usuario', rotuloAcessivel: 'Perfil' },
+          ]}
         />
-      </KeyboardAvoidingView>
-    </View>
+      </View>
+
+      {/* Drawer overlay */}
+      <SidebarDrawer
+        aberto={drawerAberto}
+        aoFechar={() => setDrawerAberto(false)}
+        chaveAtiva={chaveSidebar}
+        aoSelecionar={(chave) => {
+          setChaveSidebar(chave);
+          setDrawerAberto(false);
+        }}
+        grupos={[
+          {
+            chave: 'cliente',
+            rotulo: 'Cliente',
+            icone: 'usuario',
+            itens: [
+              { chave: 'cliente.cadastrar', rotulo: 'Cadastrar', icone: 'mais' },
+              { chave: 'cliente.listar', rotulo: 'Listar', icone: 'menu' },
+            ],
+          },
+          {
+            chave: 'medico',
+            rotulo: 'Médico',
+            icone: 'medico',
+            itens: [
+              { chave: 'medico.cadastrar', rotulo: 'Cadastrar', icone: 'mais' },
+              { chave: 'medico.listar', rotulo: 'Listar', icone: 'menu' },
+            ],
+          },
+        ]}
+        cabecalho={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: tema.espacamento.sm }}>
+            <MarcaApp tamanho={32} />
+            <Texto variante="corpo" peso="negrito">Clínica</Texto>
+          </View>
+        }
+      />
+    </SafeAreaView>
   );
 }
-
-

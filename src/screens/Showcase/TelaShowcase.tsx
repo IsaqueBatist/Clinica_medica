@@ -550,13 +550,6 @@ export function TelaShowcase({ aoSair }: PropsTelaShowcase) {
                     descricao: c.nome,
                   })
                 }
-                aoEditar={(c) =>
-                  toast.exibir({
-                    variante: "info",
-                    titulo: "Editar cliente",
-                    descricao: c.nome,
-                  })
-                }
               />
             ))}
           </View>

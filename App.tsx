@@ -4,9 +4,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ProvedorTema } from "./src/theme";
 import { ProvedorToast } from "./src/contexts/ContextoToast";
-import { TelaLogin } from "./src/screens/Login";
 import { AppNavigator } from "./src/navigation";
 import { ProvedoresApp } from "./src/contexts";
+import { TelaFormularioClientes } from "./src/screens/Cliente/TelaFormularioClientes";
 
 /**
  * Entrada do app.
@@ -32,11 +32,7 @@ export default function App() {
         <ProvedorToast>
           <ProvedoresApp>
             <StatusBar style="auto" />
-            {autenticado ? (
-              <AppNavigator aoSair={() => setAutenticado(false)} />
-            ) : (
-              <TelaLogin aoEntrar={() => setAutenticado(true)} />
-            )}
+            <TelaFormularioClientes />
           </ProvedoresApp>
         </ProvedorToast>
       </ProvedorTema>

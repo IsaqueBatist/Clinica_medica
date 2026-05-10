@@ -13,13 +13,11 @@ import { ItemListaPessoa } from "../pessoas/ItemListaPessoa";
 export interface PropsItemListaCliente {
   cliente: Cliente;
   aoVerPerfil?: (cliente: Cliente) => void;
-  aoEditar?: (cliente: Cliente) => void;
 }
 
 export function ItemListaCliente({
   cliente,
   aoVerPerfil,
-  aoEditar,
 }: PropsItemListaCliente) {
   const linhaExtra = cliente.convenio
     ? `Convênio: ${cliente.convenio.nome}`
@@ -33,7 +31,6 @@ export function ItemListaCliente({
       rotuloStatus={STATUS_PESSOA_LABEL[cliente.status]}
       varianteStatus={cliente.status === "ativo" ? "sucesso" : "neutro"}
       aoVerPerfil={aoVerPerfil ? () => aoVerPerfil(cliente) : undefined}
-      aoEditar={aoEditar ? () => aoEditar(cliente) : undefined}
     />
   );
 }
