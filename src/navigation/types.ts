@@ -26,8 +26,8 @@ export type ClientesStackParamList = {
 };
 
 export type ConsultasStackParamList = {
-  [Routes.ListarConsultas]: undefined;
   [Routes.ConsultaMarcacao]: undefined;
+  [Routes.ListarConsultas]: undefined;
   [Routes.ConsultaConfirmacao]: undefined;
   [Routes.ConsultaRealizacao]: undefined;
   [Routes.ConsultaEncerramento]: undefined;
@@ -112,15 +112,15 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
     itens: [
       {
         stack: Routes.ConsultasStack,
-        tela: Routes.ListarConsultas,
-        rotulo: "Listar",
-        icone: "menu",
-      },
-      {
-        stack: Routes.ConsultasStack,
         tela: Routes.ConsultaMarcacao,
         rotulo: "Marcar",
         icone: "mais",
+      },
+      {
+        stack: Routes.ConsultasStack,
+        tela: Routes.ListarConsultas,
+        rotulo: "Listar",
+        icone: "menu",
       },
       {
         stack: Routes.ConsultasStack,

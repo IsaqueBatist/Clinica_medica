@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 import { GlobalBarraInferior } from "../components/GlobalBarraInferior";
 import { DrawerNavigator } from "./DrawerNavigator";
-import { Routes } from "../constants/routes";
 
 interface PropsLayoutAutenticado {
   rotaAtiva: string;
