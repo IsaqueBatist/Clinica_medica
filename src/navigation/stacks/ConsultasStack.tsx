@@ -9,6 +9,7 @@ import { Routes } from "../../constants/routes";
 import { AppHeader } from "../components/AppHeader";
 import type { ConsultasStackParamList } from "../types";
 import { TelaListarConsultas } from "../../screens/consulta/TelaListarConsultas";
+import { TelaEncerrarConsulta } from "../../screens/consulta/TelaEncerrarConsulta";
 
 const Stack = createNativeStackNavigator<ConsultasStackParamList>();
 
@@ -39,7 +40,7 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.ConsultaEncerramento}
-        component={TelaPlaceholder}
+        component={TelaEncerrarConsulta}
         options={{ title: "Encerrar consulta" }}
       />
       <Stack.Screen

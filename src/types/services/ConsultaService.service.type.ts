@@ -31,7 +31,7 @@ export type RealizarAtendimentoMedicoDTO = Pick<
 
 export type EncerrarConsultaDTO = Pick<
   Consulta,
-  "formaPagamento" | "valor" | "procedimentos"
+  "formaPagamento" | "valor" | "procedimentos" | "tipo"
 >;
 
 export type CancelarConsultaDTO = Pick<Consulta, "motivoCancelamento">;

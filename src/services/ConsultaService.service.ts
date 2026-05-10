@@ -92,6 +92,12 @@ export const servicoConsulta: ServicoConsulta = {
   async encerrarConsulta(idConsulta, data) {
     await delay();
 
+    if (data.tipo === "retorno" && data.valor && data.valor > 0) {
+      throw new Error(
+        "Violação de regra de negócio: Cobrança em consulta de retorno.",
+      );
+    }
+
     const index = consultasMock.findIndex((c) => c.numero === idConsulta);
     if (index === -1) {
       throw new Error(`Consulta '${idConsulta}' inexistente.`);

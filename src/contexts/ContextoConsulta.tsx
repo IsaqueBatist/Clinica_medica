@@ -246,10 +246,22 @@ export function ProvedorConsulta({ children }: PropsProvedorConsulta) {
 
   const encerrarConsulta = useCallback(
     async (numero: string, dto: EncerrarConsultaDTO) => {
+      const consulta = state.items.find((c) => c.numero === numero);
+
+      if (!consulta) {
+        throw new Error("Consulta não encontrada.");
+      }
+
+      if (consulta.situacao !== STATUS_CONSULTA.REALIZADA) {
+        throw new Error(
+          `Transição de estado inválida: Não é possível encerrar uma consulta com status ${consulta.situacao}.`,
+        );
+      }
+
       await servicoConsulta.encerrarConsulta(numero, dto);
       dispatch({ type: "ENCERRAR", payload: { numero, dados: dto } });
     },
-    [],
+    [state.items],
   );
 
   const cancelarConsultaPeloCliente = useCallback(

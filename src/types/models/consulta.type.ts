@@ -5,6 +5,7 @@ import {
   SituacaoConsulta,
   TipoConsulta,
 } from "../../constants/consulta";
+import { Procedimento } from "../../constants/procedimentos";
 
 export interface Consulta {
   numero: string;
@@ -18,6 +19,6 @@ export interface Consulta {
   laudo?: string;
   receita?: string;
   motivoCancelamento?: string;
-  procedimentos?: string;
+  procedimentos?: Procedimento[];
   observacao?: string;
 }

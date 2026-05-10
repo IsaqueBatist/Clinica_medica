@@ -55,9 +55,8 @@ export function Sidebar({
   aoFechar,
 }: PropsSidebar) {
   const { tema } = useTema();
-  // grupos abertos quando expandidos. Default: todos abertos.
-  const [abertos, setAbertos] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(grupos.map((g) => [g.chave, true])),
+  const [abertos, setAbertos] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(grupos.map((g) => [g.chave, true])),
   );
 
   const alternarGrupo = (chave: string) =>
@@ -139,11 +138,7 @@ export function Sidebar({
                   variante="corpo"
                   peso="medio"
                   style={{ flex: 1 }}
-                  cor={
-                    algumFilhoAtivo
-                      ? "marca.primario"
-                      : "texto.secundario"
-                  }
+                  cor={algumFilhoAtivo ? "marca.primario" : "texto.secundario"}
                 >
                   {grupo.rotulo}
                 </Texto>

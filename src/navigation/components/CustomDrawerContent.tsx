@@ -58,7 +58,7 @@ export function CustomDrawerContent({
         >
           <MarcaApp tamanho={32} />
           <Texto variante="corpo" peso="negrito">
-            Clínica
+            Clínica Maria auxiliadora
           </Texto>
         </View>
 
