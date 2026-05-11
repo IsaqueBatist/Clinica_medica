@@ -35,10 +35,17 @@ export type ConsultasStackParamList = {
   [Routes.DetalheConsulta]: { id: string };
 };
 
+export type MedicosStackParamList = {
+  [Routes.ListarMedicos]: undefined;
+  [Routes.CadastroMedico]: { id?: string };
+  [Routes.DetalheMedico]: { id: string };
+};
+
 export type DrawerParamList = {
   [Routes.DashboardStack]: NavigatorScreenParams<DashboardStackParamList>;
   [Routes.ClientesStack]: NavigatorScreenParams<ClientesStackParamList>;
   [Routes.ConsultasStack]: NavigatorScreenParams<ConsultasStackParamList>;
+  [Routes.MedicosStack]: NavigatorScreenParams<MedicosStackParamList>;
 };
 
 /** Subitem dentro de um grupo do drawer. */
@@ -58,18 +65,18 @@ export interface SubItemDrawer {
  */
 export type EntradaDrawer =
   | {
-      tipo: "item";
-      nome: keyof DrawerParamList;
-      rotulo: string;
-      icone: NomeIcone;
-    }
+    tipo: "item";
+    nome: keyof DrawerParamList;
+    rotulo: string;
+    icone: NomeIcone;
+  }
   | {
-      tipo: "grupo";
-      chave: string;
-      rotulo: string;
-      icone: NomeIcone;
-      itens: SubItemDrawer[];
-    };
+    tipo: "grupo";
+    chave: string;
+    rotulo: string;
+    icone: NomeIcone;
+    itens: SubItemDrawer[];
+  };
 
 /**
  * Estrutura visual do drawer. Para adicionar uma seção:
@@ -145,6 +152,26 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
         tela: Routes.ConsultaCancelamento,
         rotulo: "Cancelar",
         icone: "fechar",
+      },
+    ],
+  },
+  {
+    tipo: "grupo",
+    chave: "medicos",
+    rotulo: "Médicos",
+    icone: "usuario",
+    itens: [
+      {
+        stack: Routes.MedicosStack,
+        tela: Routes.CadastroMedico,
+        rotulo: "Cadastrar",
+        icone: "mais",
+      },
+      {
+        stack: Routes.MedicosStack,
+        tela: Routes.ListarMedicos,
+        rotulo: "Listar",
+        icone: "menu",
       },
     ],
   },

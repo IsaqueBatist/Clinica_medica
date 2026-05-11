@@ -7,6 +7,7 @@ export const Routes = {
   DashboardStack: "DashboardStack",
   ClientesStack: "ClientesStack",
   ConsultasStack: "ConsultasStack",
+  MedicosStack: "MedicosStack",
 
   ListarConsultas: "ListarConsultas",
   DetalheConsulta: "DetalheConsulta",
@@ -19,4 +20,8 @@ export const Routes = {
   ListarClientes: "ListarClientes",
   CadastroCliente: "CadastroCliente",
   DetalheCliente: "DetalheCliente",
+
+  ListarMedicos: "ListarMedicos",
+  CadastroMedico: "CadastroMedico",
+  DetalheMedico: "DetalheMedico",
 } as const;

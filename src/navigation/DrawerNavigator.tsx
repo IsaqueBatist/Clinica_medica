@@ -7,6 +7,7 @@ import { CustomDrawerContent } from "./components/CustomDrawerContent";
 import { DashboardStack } from "./stacks/DashboardStack";
 import { ClientesStack } from "./stacks/ClientesStack";
 import { ConsultasStack } from "./stacks/ConsultasStack";
+import { MedicosStack } from "./stacks/MedicoStack";
 import type { DrawerParamList } from "./types";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -45,6 +46,7 @@ export function DrawerNavigator() {
       <Drawer.Screen name={Routes.DashboardStack} component={DashboardStack} />
       <Drawer.Screen name={Routes.ClientesStack} component={ClientesStack} />
       <Drawer.Screen name={Routes.ConsultasStack} component={ConsultasStack} />
+      <Drawer.Screen name={Routes.MedicosStack} component={MedicosStack} />
     </Drawer.Navigator>
   );
 }
