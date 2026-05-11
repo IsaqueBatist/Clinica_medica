@@ -11,7 +11,7 @@ import {
   TIPO_CONSULTA,
   TIPO_CONSULTA_LABEL,
 } from "../../../../constants/consulta";
-import { canCobrar } from "../../../../domain/consulta";
+import { canCobrar } from "../../../../utils/consulta";
 import { AcaoMarcacao, EstadoMarcacao } from "../../tiposMarcacao";
 
 interface Props {

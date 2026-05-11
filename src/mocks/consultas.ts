@@ -106,6 +106,19 @@ export const consultasMock: Consulta[] = [
     situacao: STATUS_CONSULTA.MARCADA,
     tipo: TIPO_CONSULTA.RETORNO,
   },
+  {
+    numero: "1905",
+    cliente: cli007Roberto,
+    medico: med002Cardiologista,
+    dataHora: new Date(),
+    situacao: STATUS_CONSULTA.ENCERRADA, // Status que gera faturamento
+    tipo: TIPO_CONSULTA.NOVA, // Elegível para cobrança
+    formaPagamento: FORMA_PAGAMENTO.PIX,
+    valor: 300, // Valor a ser somado
+    laudo: "Exames de rotina avaliados. Tudo normal.",
+    receita: "",
+    observacao: "Pagamento realizado e consulta encerrada com sucesso.",
+  },
 ];
 
 /** Consultas com data relativa a “hoje” para CONS-03 / fluxos locais. */
