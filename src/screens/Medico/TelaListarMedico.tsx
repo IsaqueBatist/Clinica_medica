@@ -12,7 +12,7 @@ import { MedicosStackParamList } from "../../navigation/types";
 import { Routes } from "../../constants/routes";
 import type { Medico } from "../../types/models/medico.type"; // Importe o tipo oficial
 
-export function TelaListarMedicos() {
+export function TelaListarMedico() {
     const { tema } = useTema();
     const { state, criarMedico } = useContextoMedico();
 

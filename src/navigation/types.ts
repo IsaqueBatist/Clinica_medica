@@ -159,7 +159,7 @@ export const ENTRADAS_DRAWER: EntradaDrawer[] = [
     tipo: "grupo",
     chave: "medicos",
     rotulo: "Médicos",
-    icone: "usuario",
+    icone: "medico",
     itens: [
       {
         stack: Routes.MedicosStack,

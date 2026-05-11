@@ -6,9 +6,10 @@ import { AppHeader } from "../components/AppHeader";
 import type { MedicosStackParamList } from "../types";
 
 // Importe a tela de listagem que acabamos de criar (Ajuste o caminho se precisar)
-import { TelaListarMedicos } from "../../screens/Medico/TelaListarMedico";
+import { TelaListarMedico } from "../../screens/Medico/TelaListarMedico";
 // Importe o Placeholder para as telas que ainda não criamos
-import { TelaPlaceholder } from "../../screens/Placeholder";
+import { TelaFormularioMedico } from "../../screens/Medico/TelaFormularioMedico";
+import { TelaDetalheMedico } from "../../screens/Medico/TelaDetalheMedico";
 
 const Stack = createNativeStackNavigator<MedicosStackParamList>();
 
@@ -19,18 +20,18 @@ export function MedicosStack() {
         >
             <Stack.Screen
                 name={Routes.ListarMedicos}
-                component={TelaListarMedicos}
-                options={{ title: "Médicos" }} // Deixe false pois a sua TelaListarMedicos não precisa de um segundo Header
+                component={TelaListarMedico}
+                options={{ title: "Médicos" }}// Deixe false pois a sua TelaListarMedicos não precisa de um segundo Header
             />
             <Stack.Screen
                 name={Routes.CadastroMedico}
-                component={TelaPlaceholder} // Quando criar a TelaFormularioMedicos, troque aqui!
+                component={TelaFormularioMedico} // Quando criar a TelaFormularioMedicos, troque aqui!
                 options={{ title: "Cadastrar médico" }}
             />
             <Stack.Screen
                 name={Routes.DetalheMedico}
-                component={TelaPlaceholder} // Quando criar a TelaFormularioMedicos, troque aqui!
-                options={{ title: "Detalhe" }}
+                component={TelaDetalheMedico} // Quando criar a TelaFormularioMedicos, troque aqui!
+                options={{ title: "Detalhes do médico" }}
             />
         </Stack.Navigator>
     );
