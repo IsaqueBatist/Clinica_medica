@@ -4,7 +4,7 @@ import { Consulta } from "../types/models/consulta.type";
 import { ServicoConsulta } from "../types/services/ConsultaService.service.type";
 import { delay } from "../utils/delay";
 import { assertTransition } from "../utils/consultaStateMachine";
-import { validarRegrasEncerramento } from "../domain/consulta";
+import { validarRegrasEncerramento } from "../utils/consulta";
 
 const mesmoDia = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() &&
