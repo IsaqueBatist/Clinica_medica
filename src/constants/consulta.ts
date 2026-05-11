@@ -1,3 +1,5 @@
+import { VarianteBadge } from "../components/ui/Badge";
+
 export const STATUS_CONSULTA_ATIVOS = {
   MARCADA: "marcada",
   CONFIRMADA: "confirmada",
@@ -31,6 +33,16 @@ export const STATUS_CONSULTA_LABEL = {
   canceladaPorNaoComparecimento: "Cancelada por não comparecimento",
   encerrada: "Encerrada",
 } as const satisfies Record<SituacaoConsulta, string>;
+
+export const STATUS_CONSULTA_VARIANTE = {
+  marcada: "info",
+  confirmada: "marca",
+  realizada: "sucesso",
+  canceladaPeloCliente: "erro",
+  canceladaPeloMedico: "erro",
+  canceladaPorNaoComparecimento: "aviso",
+  encerrada: "neutro",
+} as const satisfies Record<SituacaoConsulta, VarianteBadge>;
 
 export const TIPO_CONSULTA = {
   NOVA: "nova",

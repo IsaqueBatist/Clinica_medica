@@ -11,6 +11,7 @@ import type { ConsultasStackParamList } from "../types";
 import { TelaListarConsultas } from "../../screens/consulta/TelaListarConsultas";
 import { TelaEncerrarConsulta } from "../../screens/consulta/TelaEncerrarConsulta";
 import { TelaRealizarConsulta } from "../../screens/consulta/TelaRealizarConsulta";
+import { TelaDetalheConsulta } from "../../screens/consulta/componentes/TelaDetalheConsulta";
 
 const Stack = createNativeStackNavigator<ConsultasStackParamList>();
 
@@ -51,7 +52,7 @@ export function ConsultasStack() {
       />
       <Stack.Screen
         name={Routes.DetalheConsulta}
-        component={TelaPlaceholder}
+        component={TelaDetalheConsulta}
         options={{ title: "Detalhe" }}
       />
     </Stack.Navigator>
