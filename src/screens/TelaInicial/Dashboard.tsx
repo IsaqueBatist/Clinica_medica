@@ -1,5 +1,10 @@
-import React, { useState, useMemo, useCallback } from "react";
-import { ScrollView, RefreshControl, View, TouchableOpacity } from "react-native";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import {
+  ScrollView,
+  RefreshControl,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Texto } from "../../components";
@@ -17,6 +22,7 @@ import {
   totalConsultasPeriodo,
 } from "../../types/stats";
 import { STATUS_CONSULTA } from "../../constants/consulta";
+import { criarCliente, criarConsulta, criarMedico } from "../../config/teste";
 
 // ─── Subcomponentes ────────────────────────────────────────────────────────────
 
@@ -28,7 +34,13 @@ interface PropsCardMetrica {
   corValor?: string;
 }
 
-function CardMetrica({ rotulo, valor, sub, destaque, corValor }: PropsCardMetrica) {
+function CardMetrica({
+  rotulo,
+  valor,
+  sub,
+  destaque,
+  corValor,
+}: PropsCardMetrica) {
   const { tema } = useTema();
   return (
     <View
@@ -39,7 +51,9 @@ function CardMetrica({ rotulo, valor, sub, destaque, corValor }: PropsCardMetric
         borderWidth: destaque ? 0 : 1,
         borderColor: tema.cores.borda.padrao,
         borderLeftWidth: destaque ? 3 : 1,
-        borderLeftColor: destaque ? tema.cores.marca.primario : tema.cores.borda.padrao,
+        borderLeftColor: destaque
+          ? tema.cores.marca.primario
+          : tema.cores.borda.padrao,
         padding: 14,
         gap: 4,
       }}
@@ -67,7 +81,10 @@ function CardMetrica({ rotulo, valor, sub, destaque, corValor }: PropsCardMetric
         {valor}
       </Texto>
       {sub ? (
-        <Texto variante="legenda" style={{ fontSize: 11, color: tema.cores.texto.suave }}>
+        <Texto
+          variante="legenda"
+          style={{ fontSize: 11, color: tema.cores.texto.suave }}
+        >
           {sub}
         </Texto>
       ) : null}
@@ -86,8 +103,14 @@ function BadgeStatus({ rotulo, variante }: PropsBadgeStatus) {
   const estilos: Record<string, { bg: string; texto: string }> = {
     marcada: { bg: tema.cores.fundo.suave, texto: tema.cores.texto.suave },
     confirmada: { bg: "#e1f5ee", texto: "#085041" },
-    realizada: { bg: tema.cores.marca.primario + "18", texto: tema.cores.marca.primario },
-    encerrada: { bg: tema.cores.status.sucesso + "18", texto: tema.cores.status.sucesso },
+    realizada: {
+      bg: tema.cores.marca.primario + "18",
+      texto: tema.cores.marca.primario,
+    },
+    encerrada: {
+      bg: tema.cores.status.sucesso + "18",
+      texto: tema.cores.status.sucesso,
+    },
     falta: { bg: tema.cores.status.erro + "18", texto: tema.cores.status.erro },
   };
 
@@ -102,7 +125,10 @@ function BadgeStatus({ rotulo, variante }: PropsBadgeStatus) {
         backgroundColor: bg,
       }}
     >
-      <Texto variante="legenda" style={{ fontSize: 12, fontWeight: "600", color: texto }}>
+      <Texto
+        variante="legenda"
+        style={{ fontSize: 12, fontWeight: "600", color: texto }}
+      >
         {rotulo}
       </Texto>
     </View>
@@ -131,7 +157,8 @@ export function Dashboard() {
       (porStatus[STATUS_CONSULTA.ENCERRADA] ?? 0) +
       (porStatus[STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO] ?? 0);
 
-    const faltas = porStatus[STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO] ?? 0;
+    const faltas =
+      porStatus[STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO] ?? 0;
 
     return {
       status: porStatus,
@@ -148,6 +175,75 @@ export function Dashboard() {
     };
   }, [state.items, periodoDashboard]);
 
+  async function handleSalvarCliente() {
+    try {
+      await criarCliente("CLI-001", {
+        nome: "Carlos Eduardo da Silva",
+        cpf: "111.222.333-44",
+        sexo: "M",
+        dataNascimento: new Date("1980-05-15"),
+        email: "carlos@exemplo.com",
+        telefones: ["11999998888"],
+        endereco: {
+          rua: "Rua das Flores",
+          numero: "123",
+          cep: "01000-000",
+          cidade: "São Paulo",
+          estado: "SP",
+        },
+        convenio: {
+          nome: "SulAmérica",
+          numero: "777888999",
+        },
+      });
+      // Lógica pós-salvamento (ex: alert, navegação)
+    } catch (error) {
+      // Tratamento de erro (ex: toast de falha)
+    }
+  }
+  async function handleSalvarMedico() {
+    try {
+      await criarMedico("MED-4099", {
+        nome: "Dra. Ana Lúcia Ferreira",
+        crm: "CRM-SP 123456",
+        especialidade: "Cardiologia",
+        telefones: ["11977776666"],
+        endereco: {
+          rua: "Av. Paulista",
+          numero: "1000",
+          cep: "01311-100",
+          cidade: "São Paulo",
+          estado: "SP",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function handleAgendarConsulta() {
+    try {
+      // Retorna o ID gerado caso você precise usá-lo imediatamente
+      const idNovaConsulta = await criarConsulta({
+        cliente: "CLI-001", // Referência ao ID salvo no passo 1
+        medico: "MED-4099", // Referência ao ID salvo no passo 2
+        tipo: "nova",
+        formaPagamento: "pix",
+        valor: 350.0,
+        observacao: "Paciente de primeira vez, trazer exames anteriores.",
+      });
+
+      console.log("Sucesso! ID da nova consulta:", idNovaConsulta);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  useEffect(() => {
+    const carregardados = async () => {
+      await handleSalvarCliente();
+    };
+    carregardados();
+  }, []);
+
   if (!state.loading && state.items.length === 0) {
     return (
       <SafeAreaView
@@ -162,7 +258,11 @@ export function Dashboard() {
         <Texto variante="h1" style={{ textAlign: "center", marginBottom: 16 }}>
           Bem-vindo à Clínica!
         </Texto>
-        <Texto variante="corpo" cor="texto.suave" style={{ textAlign: "center", marginBottom: 32 }}>
+        <Texto
+          variante="corpo"
+          cor="texto.suave"
+          style={{ textAlign: "center", marginBottom: 32 }}
+        >
           Parece que ainda não tem nenhuma consulta agendada.
         </Texto>
         <AtalhosRapidos />
@@ -198,7 +298,10 @@ export function Dashboard() {
           <Texto variante="h2">Dashboard</Texto>
 
           {/* Filtro de período */}
-          <PeriodoFilter periodoAtivo={periodoDashboard} aoMudar={setPeriodoDashboard} />
+          <PeriodoFilter
+            periodoAtivo={periodoDashboard}
+            aoMudar={setPeriodoDashboard}
+          />
 
           {/* Linha 1: Faturamento (destaque) + Agendamentos */}
           <View style={{ flexDirection: "row", gap: tema.espacamento.sm }}>
@@ -245,24 +348,43 @@ export function Dashboard() {
               gap: 10,
             }}
           >
-            <Texto variante="legenda" peso="negrito" style={{ color: tema.cores.texto.secundario }}>
+            <Texto
+              variante="legenda"
+              peso="negrito"
+              style={{ color: tema.cores.texto.secundario }}
+            >
               Status do dia
             </Texto>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
               {dadosDashboard.marcadas > 0 && (
-                <BadgeStatus rotulo={`${dadosDashboard.marcadas} marcada${dadosDashboard.marcadas > 1 ? "s" : ""}`} variante="marcada" />
+                <BadgeStatus
+                  rotulo={`${dadosDashboard.marcadas} marcada${dadosDashboard.marcadas > 1 ? "s" : ""}`}
+                  variante="marcada"
+                />
               )}
               {dadosDashboard.confirmados > 0 && (
-                <BadgeStatus rotulo={`${dadosDashboard.confirmados} confirmada${dadosDashboard.confirmados > 1 ? "s" : ""}`} variante="confirmada" />
+                <BadgeStatus
+                  rotulo={`${dadosDashboard.confirmados} confirmada${dadosDashboard.confirmados > 1 ? "s" : ""}`}
+                  variante="confirmada"
+                />
               )}
               {dadosDashboard.realizadas > 0 && (
-                <BadgeStatus rotulo={`${dadosDashboard.realizadas} realizada${dadosDashboard.realizadas > 1 ? "s" : ""}`} variante="realizada" />
+                <BadgeStatus
+                  rotulo={`${dadosDashboard.realizadas} realizada${dadosDashboard.realizadas > 1 ? "s" : ""}`}
+                  variante="realizada"
+                />
               )}
               {dadosDashboard.encerradas > 0 && (
-                <BadgeStatus rotulo={`${dadosDashboard.encerradas} encerrada${dadosDashboard.encerradas > 1 ? "s" : ""}`} variante="encerrada" />
+                <BadgeStatus
+                  rotulo={`${dadosDashboard.encerradas} encerrada${dadosDashboard.encerradas > 1 ? "s" : ""}`}
+                  variante="encerrada"
+                />
               )}
               {dadosDashboard.faltas > 0 && (
-                <BadgeStatus rotulo={`${dadosDashboard.faltas} falta${dadosDashboard.faltas > 1 ? "s" : ""}`} variante="falta" />
+                <BadgeStatus
+                  rotulo={`${dadosDashboard.faltas} falta${dadosDashboard.faltas > 1 ? "s" : ""}`}
+                  variante="falta"
+                />
               )}
             </View>
           </View>
@@ -279,11 +401,25 @@ export function Dashboard() {
                 gap: 2,
               }}
             >
-              <View style={{ marginBottom: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Texto variante="legenda" peso="negrito" style={{ color: tema.cores.texto.secundario }}>
+              <View
+                style={{
+                  marginBottom: 10,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Texto
+                  variante="legenda"
+                  peso="negrito"
+                  style={{ color: tema.cores.texto.secundario }}
+                >
                   Top médicos
                 </Texto>
-                <Texto variante="legenda" style={{ fontSize: 11, color: tema.cores.texto.suave }}>
+                <Texto
+                  variante="legenda"
+                  style={{ fontSize: 11, color: tema.cores.texto.suave }}
+                >
                   {periodoDashboard}
                 </Texto>
               </View>
@@ -296,15 +432,32 @@ export function Dashboard() {
                     justifyContent: "space-between",
                     alignItems: "center",
                     paddingVertical: 8,
-                    borderBottomWidth: i < dadosDashboard.topMedicos.length - 1 ? 1 : 0,
+                    borderBottomWidth:
+                      i < dadosDashboard.topMedicos.length - 1 ? 1 : 0,
                     borderBottomColor: tema.cores.borda.padrao,
                   }}
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                    <Texto variante="legenda" style={{ fontSize: 11, color: tema.cores.texto.suave, minWidth: 16 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <Texto
+                      variante="legenda"
+                      style={{
+                        fontSize: 11,
+                        color: tema.cores.texto.suave,
+                        minWidth: 16,
+                      }}
+                    >
                       {i + 1}.
                     </Texto>
-                    <Texto variante="corpo" style={{ color: tema.cores.texto.primario }}>
+                    <Texto
+                      variante="corpo"
+                      style={{ color: tema.cores.texto.primario }}
+                    >
                       {med.nome}
                     </Texto>
                   </View>
@@ -318,7 +471,11 @@ export function Dashboard() {
                   >
                     <Texto
                       variante="legenda"
-                      style={{ fontSize: 12, fontWeight: "600", color: tema.cores.marca.primario }}
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "600",
+                        color: tema.cores.marca.primario,
+                      }}
                     >
                       {med.count} atend.
                     </Texto>

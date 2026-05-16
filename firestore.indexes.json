@@ -1,0 +1,31 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "consultas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "medico", "order": "ASCENDING" },
+        { "fieldPath": "situacao", "order": "ASCENDING" },
+        { "fieldPath": "dataHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "consultas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "cliente", "order": "ASCENDING" },
+        { "fieldPath": "situacao", "order": "ASCENDING" },
+        { "fieldPath": "dataHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "consultas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "situacao", "order": "ASCENDING" },
+        { "fieldPath": "dataHora", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
