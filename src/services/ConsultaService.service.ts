@@ -5,6 +5,7 @@ import { ServicoConsulta } from "../types/services/ConsultaService.service.type"
 import { delay } from "../utils/delay";
 import { assertTransition } from "../utils/consultaStateMachine";
 import { validarRegrasEncerramento } from "../utils/consulta";
+import { runTransaction } from "../utils/mockTransaction";
 
 const mesmoDia = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() &&
@@ -75,39 +76,21 @@ export const servicoConsulta: ServicoConsulta = {
 
   async realizarConsulta(idConsulta, data) {
     await delay();
-
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    assertTransition(consultasMock[index].situacao, STATUS_CONSULTA.REALIZADA);
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      ...data,
-      situacao: STATUS_CONSULTA.REALIZADA,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      assertTransition(consulta.situacao, STATUS_CONSULTA.REALIZADA);
+      t.update(idConsulta, { ...data, situacao: STATUS_CONSULTA.REALIZADA });
+    });
   },
 
   async encerrarConsulta(idConsulta, data) {
     await delay();
-
-    // Delegação para o agregado do domínio
-    validarRegrasEncerramento(data.tipo, data.valor);
-
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    assertTransition(consultasMock[index].situacao, STATUS_CONSULTA.ENCERRADA);
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      ...data,
-      situacao: STATUS_CONSULTA.ENCERRADA,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      assertTransition(consulta.situacao, STATUS_CONSULTA.ENCERRADA);
+      validarRegrasEncerramento(consulta.tipo, data.valor);
+      t.update(idConsulta, { ...data, situacao: STATUS_CONSULTA.ENCERRADA });
+    });
   },
 
   async confirmarConsulta(idConsulta) {
@@ -125,84 +108,44 @@ export const servicoConsulta: ServicoConsulta = {
 
   async cancelarConsulta(idConsulta, data) {
     await delay();
-
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    assertTransition(
-      consultasMock[index].situacao,
-      STATUS_CONSULTA.CANCELADA_PELO_CLIENTE,
-    );
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      ...data,
-      situacao: STATUS_CONSULTA.CANCELADA_PELO_CLIENTE,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      assertTransition(consulta.situacao, STATUS_CONSULTA.CANCELADA_PELO_CLIENTE);
+      t.update(idConsulta, { ...data, situacao: STATUS_CONSULTA.CANCELADA_PELO_CLIENTE });
+    });
   },
 
   async cancelarConsultaMedico(idConsulta, data) {
     await delay();
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    assertTransition(
-      consultasMock[index].situacao,
-      STATUS_CONSULTA.CANCELADA_PELO_MEDICO,
-    );
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      ...data,
-      situacao: STATUS_CONSULTA.CANCELADA_PELO_MEDICO,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      assertTransition(consulta.situacao, STATUS_CONSULTA.CANCELADA_PELO_MEDICO);
+      t.update(idConsulta, { ...data, situacao: STATUS_CONSULTA.CANCELADA_PELO_MEDICO });
+    });
   },
 
   async cancelarPorNaoComparecimento(idConsulta) {
     await delay();
-
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    assertTransition(
-      consultasMock[index].situacao,
-      STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
-    );
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      motivoCancelamento: "Paciente não compareceu ao atendimento agendado.",
-      situacao: STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      assertTransition(consulta.situacao, STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO);
+      t.update(idConsulta, {
+        motivoCancelamento: "Paciente não compareceu ao atendimento agendado.",
+        situacao: STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO,
+      });
+    });
   },
 
   async desfazerNaoComparecimento(idConsulta) {
     await delay();
-
-    const index = consultasMock.findIndex((c) => c.numero === idConsulta);
-    if (index === -1) {
-      throw new Error(`Consulta '${idConsulta}' inexistente.`);
-    }
-
-    if (
-      consultasMock[index].situacao !==
-      STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO
-    ) {
-      throw new Error(
-        "Operação de compensação inválida: A consulta não se encontra no estado de cancelamento automático.",
-      );
-    }
-
-    consultasMock[index] = {
-      ...consultasMock[index],
-      motivoCancelamento: undefined,
-      situacao: STATUS_CONSULTA.MARCADA,
-    };
+    await runTransaction(consultasMock, async (t) => {
+      const consulta = await t.get(idConsulta);
+      if (consulta.situacao !== STATUS_CONSULTA.CANCELADA_POR_NAO_COMPARECIMENTO) {
+        throw new Error(
+          "Operação de compensação inválida: A consulta não se encontra no estado de cancelamento automático.",
+        );
+      }
+      t.update(idConsulta, { motivoCancelamento: undefined, situacao: STATUS_CONSULTA.MARCADA });
+    });
   },
 };
